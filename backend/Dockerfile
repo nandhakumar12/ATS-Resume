@@ -5,12 +5,22 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y build-essential && rm -rf /var/lib/apt/lists/*
+# System dependencies
+RUN apt-get update && \
+    apt-get install -y build-essential && \
+    rm -rf /var/lib/apt/lists/*
 
+# Copy requirements first (for Docker caching)
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt && \
-    python -m spacy download en_core_web_md
 
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Download NLTK & spaCy models AFTER installation
+RUN python -m nltk.downloader punkt stopwords wordnet averaged_perceptron_tagger
+RUN python -m spacy download en_core_web_sm
+
+# Copy app code
 COPY app ./app
 
 EXPOSE 8000
