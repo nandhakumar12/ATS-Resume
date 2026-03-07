@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { scoreResume } from "../services/api";
+import { scoreResume, deleteResume, updateResumeSkills } from "../services/api";
 
 /* Animated SVG ring for overall score */
 const ScoreRing = ({ value = 0 }) => {
@@ -46,13 +46,15 @@ const Bar = ({ label, value = 0 }) => (
     </div>
 );
 
-const CandidatePanel = ({ candidate, onRecalculate }) => {
+const CandidatePanel = ({ candidate, onRecalculate, onDelete }) => {
     const [editedSkills, setEditedSkills] = useState([]);
     const [newSkill, setNewSkill] = useState("");
     const [score, setScore] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [deleting, setDeleting] = useState(false);
 
     const parsed = candidate?.parsed_data || {};
+    const resumeId = candidate?.id;
     const fileUrl = parsed?.file_url;
     const existingSkills = parsed?.skills || [];
     const allSkills = [...new Set([...existingSkills, ...editedSkills])];
@@ -69,9 +71,26 @@ const CandidatePanel = ({ candidate, onRecalculate }) => {
         setEditedSkills((prev) => prev.filter((s) => s !== skill));
     };
 
+    const handleDelete = async () => {
+        if (!resumeId || !window.confirm(`Delete "${candidate.filename}"?`)) return;
+        setDeleting(true);
+        try {
+            await deleteResume(resumeId);
+            if (onDelete) onDelete(resumeId);
+        } catch (err) {
+            alert("Delete failed: " + err.message);
+        } finally {
+            setDeleting(false);
+        }
+    };
+
     const handleRecalculate = async () => {
         setLoading(true);
         try {
+            // Persist edited skills to DynamoDB first
+            if (editedSkills.length > 0 && resumeId) {
+                await updateResumeSkills(resumeId, editedSkills);
+            }
             const resumeText = allSkills.join(" ") + " " + (parsed.designation || []).join(" ");
             const result = await scoreResume({
                 resume_text: resumeText,
@@ -161,7 +180,7 @@ const CandidatePanel = ({ candidate, onRecalculate }) => {
                     </button>
                 </div>
 
-                {/* Basic Info */}
+                {/* Basic Info + Delete */}
                 <div className="card">
                     <div style={{ fontWeight: 700, marginBottom: "0.75rem", color: "var(--purple)", fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.08em" }}>Candidate Info</div>
                     <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem", fontSize: "0.88rem" }}>
@@ -171,6 +190,28 @@ const CandidatePanel = ({ candidate, onRecalculate }) => {
                         {parsed.total_experience != null && <div><span style={{ color: "var(--text-muted)" }}>Experience: </span>{parsed.total_experience} yrs</div>}
                         {parsed.degree?.length > 0 && <div><span style={{ color: "var(--text-muted)" }}>Degree: </span>{(parsed.degree || []).join(", ")}</div>}
                     </div>
+                    <button
+                        onClick={handleDelete}
+                        disabled={deleting}
+                        style={{
+                            marginTop: "1rem",
+                            width: "100%",
+                            padding: "0.6rem",
+                            borderRadius: "var(--radius)",
+                            border: "1px solid var(--red)",
+                            background: "rgba(248,113,113,0.08)",
+                            color: "var(--red)",
+                            cursor: "pointer",
+                            fontWeight: 700,
+                            fontSize: "0.85rem",
+                            fontFamily: "Inter, sans-serif",
+                            transition: "all 0.2s",
+                        }}
+                        onMouseOver={(e) => { e.currentTarget.style.background = "var(--red)"; e.currentTarget.style.color = "#020617"; }}
+                        onMouseOut={(e) => { e.currentTarget.style.background = "rgba(248,113,113,0.08)"; e.currentTarget.style.color = "var(--red)"; }}
+                    >
+                        {deleting ? "Deleting…" : "🗑 Delete Resume"}
+                    </button>
                 </div>
             </div>
         </div>

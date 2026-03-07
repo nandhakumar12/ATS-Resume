@@ -25,6 +25,11 @@ const Dashboard = ({ globalScore, setGlobalScore }) => {
     setSelected(candidate);
   };
 
+  const handleDelete = (deletedId) => {
+    setItems((prev) => prev.filter((r) => r.id !== deletedId));
+    setSelected(null);
+  };
+
   return (
     <div className="dashboard">
       <header>
@@ -70,6 +75,7 @@ const Dashboard = ({ globalScore, setGlobalScore }) => {
               <CandidatePanel
                 candidate={selected}
                 onRecalculate={setGlobalScore}
+                onDelete={handleDelete}
               />
             </>
           ) : (
