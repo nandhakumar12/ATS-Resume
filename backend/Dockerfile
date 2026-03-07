@@ -18,7 +18,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Download NLTK & spaCy models AFTER installation
 RUN python -m nltk.downloader punkt stopwords wordnet averaged_perceptron_tagger
-RUN python -m spacy download en_core_web_sm
+RUN pip install https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.1/en_core_web_sm-3.7.1-py3-none-any.whl
 
 # Copy app code
 COPY app ./app
