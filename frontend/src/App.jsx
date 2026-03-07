@@ -5,15 +5,16 @@ import Results from "./pages/Results";
 
 const App = () => {
   const [page, setPage] = React.useState("dashboard");
+  const [globalScore, setGlobalScore] = React.useState(null);
 
   const renderPage = () => {
     switch (page) {
       case "upload":
-        return <Upload />;
+        return <Upload setGlobalScore={setGlobalScore} setPage={setPage} />;
       case "results":
-        return <Results />;
+        return <Results globalScore={globalScore} setGlobalScore={setGlobalScore} />;
       default:
-        return <Dashboard />;
+        return <Dashboard globalScore={globalScore} />;
     }
   };
 

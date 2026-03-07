@@ -1,13 +1,10 @@
 import React, { useState } from "react";
 import { uploadResume } from "../services/api";
-import ScoreCard from "../components/ScoreCard";
-import SkillGapChart from "../components/SkillGapChart";
 
-const Upload = () => {
+const Upload = ({ setGlobalScore, setPage }) => {
   const [file, setFile] = useState(null);
   const [jobDescription, setJobDescription] = useState("");
   const [status, setStatus] = useState("");
-  const [score, setScore] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -37,10 +34,16 @@ const Upload = () => {
           job_description: jobDescription
         });
 
-        setScore(scoreResult);
-        setStatus("Analysis Complete!");
+        if (setGlobalScore) setGlobalScore(scoreResult);
+        setStatus("Analysis Complete! Redirecting to Results...");
+        setTimeout(() => {
+          if (setPage) setPage("results");
+        }, 1500);
       } else {
-        setStatus("Uploaded successfully. Go to Results to view ATS score.");
+        setStatus("Uploaded successfully. Redirecting to Dashboard...");
+        setTimeout(() => {
+          if (setPage) setPage("dashboard");
+        }, 1500);
       }
     } catch (err) {
       setStatus("Upload failed. Check console for details.");
@@ -61,7 +64,7 @@ const Upload = () => {
           />
         </label>
         <label>
-          Job Description (optional)
+          JobDescription (optional)
           <textarea
             value={jobDescription}
             onChange={(e) => setJobDescription(e.target.value)}
@@ -71,12 +74,6 @@ const Upload = () => {
         <button type="submit">Upload & Analyze</button>
       </form>
       {status && <p className="status-text">{status}</p>}
-      {score && (
-        <div className="results-panels" style={{ marginTop: '2rem' }}>
-          <ScoreCard score={score} />
-          <SkillGapChart score={score} />
-        </div>
-      )}
     </div>
   );
 };

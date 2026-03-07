@@ -2,7 +2,7 @@ import React from "react";
 import ResumeHistory from "../components/ResumeHistory";
 import ScoreCard from "../components/ScoreCard";
 
-const Dashboard = () => {
+const Dashboard = ({ globalScore }) => {
   return (
     <div className="dashboard">
       <header>
@@ -14,7 +14,7 @@ const Dashboard = () => {
           <ResumeHistory />
         </section>
         <section className="dashboard-right">
-          <ScoreCard />
+          <ScoreCard score={globalScore} />
         </section>
       </main>
     </div>

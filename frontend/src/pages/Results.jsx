@@ -1,13 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { scoreResume } from "../services/api";
 import ScoreCard from "../components/ScoreCard";
 import SkillGapChart from "../components/SkillGapChart";
 
-const Results = () => {
+const Results = ({ globalScore, setGlobalScore }) => {
   const [resumeText, setResumeText] = useState("");
   const [jobDescription, setJobDescription] = useState("");
-  const [score, setScore] = useState(null);
+  const [score, setScore] = useState(globalScore || null);
   const [status, setStatus] = useState("");
+
+  useEffect(() => {
+    if (globalScore) {
+      setScore(globalScore);
+    }
+  }, [globalScore]);
 
   const handleScore = async (e) => {
     e.preventDefault();
@@ -18,6 +24,7 @@ const Results = () => {
         job_description: jobDescription,
       });
       setScore(result);
+      if (setGlobalScore) setGlobalScore(result);
       setStatus("Done.");
     } catch (err) {
       console.error(err);
