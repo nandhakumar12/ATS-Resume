@@ -9,4 +9,5 @@ requests==2.32.3
 pyresparser==1.0.6
 nltk==3.8.1
 spacy==2.3.5
+numpy<2.0.0
 pdfminer.six==20221105
