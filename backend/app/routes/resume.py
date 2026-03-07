@@ -17,18 +17,26 @@ router = APIRouter()
 async def upload_resume(
     file: UploadFile = File(...),
 ) -> ResumeResponse:
+    import json
+    from decimal import Decimal
+
     parsed = await parse_resume_file(file)
     table = resumes_table()
     # For local demo we don't require auth; use a simple synthetic owner id.
     owner_id = "demo-user"
     resume_id = f"{owner_id}#{file.filename}"
+
+    # Boto3 DynamoDB does not support native float values. Convert them to Decimal.
+    parsed_for_db = json.loads(json.dumps(parsed), parse_float=Decimal)
+
     item = {
         "resume_id": resume_id,
         "owner_id": owner_id,
         "filename": file.filename,
-        "parsed_data": parsed,
+        "parsed_data": parsed_for_db,
     }
     table.put_item(Item=item)
+
     return ResumeResponse(id=1, owner_id=1, filename=file.filename, parsed_data=parsed)
 
 
