@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { fetchResumeHistory } from "../services/api";
 
-const ResumeHistory = () => {
+const ResumeHistory = ({ onSelect }) => {
   const [items, setItems] = useState([]);
 
   useEffect(() => {
@@ -21,9 +21,15 @@ const ResumeHistory = () => {
       {items.length === 0 ? (
         <p>No resumes uploaded yet.</p>
       ) : (
-        <ul>
-          {items.map((r) => (
-            <li key={r.id}>
+        <ul style={{ listStyleMode: 'none', padding: 0 }}>
+          {items.map((r, i) => (
+            <li
+              key={r.id || i}
+              onClick={() => onSelect && onSelect(r)}
+              style={{ cursor: 'pointer', padding: '10px', borderBottom: '1px solid #334155', transition: 'background-color 0.2s' }}
+              onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#1e293b'}
+              onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+            >
               <strong>{r.filename}</strong>
             </li>
           ))}

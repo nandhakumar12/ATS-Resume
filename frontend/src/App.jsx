@@ -1,4 +1,5 @@
 import React from "react";
+import "./styles.css";
 import Dashboard from "./pages/Dashboard";
 import Upload from "./pages/Upload";
 import Results from "./pages/Results";
@@ -14,7 +15,7 @@ const App = () => {
       case "results":
         return <Results globalScore={globalScore} setGlobalScore={setGlobalScore} />;
       default:
-        return <Dashboard globalScore={globalScore} />;
+        return <Dashboard globalScore={globalScore} setGlobalScore={setGlobalScore} />;
     }
   };
 
@@ -23,9 +24,9 @@ const App = () => {
       <nav className="top-nav">
         <span className="brand">AI ATS</span>
         <div className="nav-links">
-          <button onClick={() => setPage("dashboard")}>Dashboard</button>
-          <button onClick={() => setPage("upload")}>Upload</button>
-          <button onClick={() => setPage("results")}>Results</button>
+          <button className={page === "dashboard" ? "active" : ""} onClick={() => setPage("dashboard")}>Dashboard</button>
+          <button className={page === "upload" ? "active" : ""} onClick={() => setPage("upload")}>Upload</button>
+          <button className={page === "results" ? "active" : ""} onClick={() => setPage("results")}>Results</button>
         </div>
       </nav>
       <div className="app-content">{renderPage()}</div>

@@ -1,8 +1,12 @@
+import os
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from app.routes import auth, resume, jobs
+
+os.makedirs("uploads", exist_ok=True)
 
 # Load environment variables from .env file
 load_dotenv()
@@ -26,6 +30,8 @@ def create_app() -> FastAPI:
     app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
     app.include_router(resume.router, prefix="/api/resumes", tags=["resumes"])
     app.include_router(jobs.router, prefix="/api/jobs", tags=["jobs"])
+
+    app.mount("/api/uploads", StaticFiles(directory="uploads"), name="uploads")
 
     return app
 
