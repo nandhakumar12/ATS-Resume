@@ -1,5 +1,6 @@
 from typing import List
 
+
 from fastapi import APIRouter, UploadFile, File
 
 from app.models.resume import ResumeCreate, ResumeResponse, ResumeScoreResponse
