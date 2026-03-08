@@ -27,7 +27,7 @@ services:
       dockerfile: Dockerfile
       args:
         - VITE_COGNITO_USER_POOL_ID=${VITE_COGNITO_USER_POOL_ID:-us-east-1_5rSehoZbr}
-        - VITE_COGNITO_CLIENT_ID=${VITE_COGNITO_CLIENT_ID:-4tc5k9rcuoph3f5s67qji93p}
+        - VITE_COGNITO_CLIENT_ID=${VITE_COGNITO_CLIENT_ID:-4td5k9rcuoph3fs5q67gjji93p}
         - VITE_API_BASE=/api
     container_name: ats-frontend
     ports:
