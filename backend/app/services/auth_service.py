@@ -86,5 +86,6 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
     except ValueError:
         role = UserRole.CANDIDATE
 
-    return User(id=1, email=email, full_name=payload.get("name"), role=role, is_active=True)
+    user_id = payload.get("sub", "demo-user")
+    return User(id=user_id, email=email, full_name=payload.get("name"), role=role, is_active=True)
 

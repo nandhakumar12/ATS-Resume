@@ -11,8 +11,8 @@ class ResumeCreate(BaseModel):
 
 
 class ResumeResponse(BaseModel):
-    id: int
-    owner_id: int
+    id: str
+    owner_id: str
     filename: str
     parsed_data: Dict[str, Any]
 
@@ -23,10 +23,10 @@ class JobCreate(BaseModel):
 
 
 class JobResponse(BaseModel):
-    id: int
+    id: str
     title: str
     description: str
-    created_by: int
+    created_by: str
 
 
 class ResumeScore(BaseModel):

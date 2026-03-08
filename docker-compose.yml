@@ -11,6 +11,12 @@ services:
       - DDB_USERS_TABLE=${DDB_USERS_TABLE:-ats_users}
       - DDB_RESUMES_TABLE=${DDB_RESUMES_TABLE:-ats_resumes}
       - DDB_JOBS_TABLE=${DDB_JOBS_TABLE:-ats_jobs}
+      - COGNITO_REGION=${COGNITO_REGION:-us-east-1}
+      - COGNITO_USER_POOL_ID=${COGNITO_USER_POOL_ID}
+      - COGNITO_APP_CLIENT_ID=${COGNITO_APP_CLIENT_ID}
+      - COGNITO_DOMAIN=${COGNITO_DOMAIN}
+      - COGNITO_REDIRECT_URI=${COGNITO_REDIRECT_URI}
+      - COGNITO_LOGOUT_URI=${COGNITO_LOGOUT_URI}
     networks:
       - ats-network
     restart: unless-stopped

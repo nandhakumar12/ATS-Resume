@@ -20,7 +20,7 @@ class UserCreate(UserBase):
 
 
 class User(UserBase):
-    id: int
+    id: str
     is_active: bool = True
 
 
