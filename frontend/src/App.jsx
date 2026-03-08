@@ -5,17 +5,10 @@ import Dashboard from "./pages/Dashboard";
 import Upload from "./pages/Upload";
 import Results from "./pages/Results";
 import Login from "./pages/Login";
-import Callback from "./pages/Callback";
 
-// ── Route detection ──────────────────────────────────────────────────────────
-function isCallbackPage() {
-  return window.location.search.startsWith("?code=");
-}
-
-// ── Inner app (has access to AuthContext) ─────────────────────────────────────
 function AppInner() {
-  const { user, loading, logout, getIdToken } = useAuth();
-  const [page, setPage] = React.useState(isCallbackPage() ? "callback" : "dashboard");
+  const { user, loading, logout } = useAuth();
+  const [page, setPage] = React.useState("dashboard");
   const [globalScore, setGlobalScore] = React.useState(null);
 
   if (loading) {
@@ -26,15 +19,10 @@ function AppInner() {
     );
   }
 
-  // Unauthenticated — show login or callback handler
-  if (!user) {
-    if (page === "callback") return <Callback setPage={setPage} />;
-    return <Login />;
-  }
+  if (!user) return <Login />;
 
   const renderPage = () => {
     switch (page) {
-      case "callback": return <Callback setPage={setPage} />;
       case "upload": return <Upload setGlobalScore={setGlobalScore} setPage={setPage} />;
       case "results": return <Results globalScore={globalScore} setGlobalScore={setGlobalScore} />;
       default: return <Dashboard globalScore={globalScore} setGlobalScore={setGlobalScore} />;
@@ -54,17 +42,7 @@ function AppInner() {
           <span style={{ fontSize: "0.82rem", color: "var(--text-muted)" }}>{user.email}</span>
           <button
             onClick={logout}
-            style={{
-              padding: "0.4rem 0.9rem",
-              borderRadius: "999px",
-              border: "1px solid var(--border)",
-              background: "transparent",
-              color: "var(--text-muted)",
-              cursor: "pointer",
-              fontSize: "0.82rem",
-              fontFamily: "Inter, sans-serif",
-              transition: "all 0.2s",
-            }}
+            style={{ padding: "0.4rem 0.9rem", borderRadius: "999px", border: "1px solid var(--border)", background: "transparent", color: "var(--text-muted)", cursor: "pointer", fontSize: "0.82rem", fontFamily: "Inter, sans-serif", transition: "all 0.2s" }}
             onMouseOver={(e) => { e.currentTarget.style.borderColor = "var(--red)"; e.currentTarget.style.color = "var(--red)"; }}
             onMouseOut={(e) => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.color = "var(--text-muted)"; }}
           >
@@ -77,7 +55,6 @@ function AppInner() {
   );
 }
 
-// ── Root ─────────────────────────────────────────────────────────────────────
 export default function App() {
   return (
     <AuthProvider>
