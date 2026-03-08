@@ -27,6 +27,8 @@ const Login = () => {
     const [loading, setLoading] = useState(false);
     const [info, setInfo] = useState("");
 
+    const toStr = (e) => (typeof e === "string" ? e : e?.message || "An error occurred");
+
     const handleLogin = async (e) => {
         e.preventDefault();
         setError(""); setLoading(true);
@@ -34,7 +36,7 @@ const Login = () => {
             const session = await signIn(email, password);
             login(session);
         } catch (err) {
-            setError(err === "NEW_PASSWORD_REQUIRED" ? "Please contact admin to reset your password." : err);
+            setError(err === "NEW_PASSWORD_REQUIRED" ? "Please contact admin to reset your password." : toStr(err));
         } finally {
             setLoading(false);
         }
@@ -48,7 +50,7 @@ const Login = () => {
             setInfo("Check your email for a verification code.");
             setView(VIEWS.CONFIRM);
         } catch (err) {
-            setError(err);
+            setError(toStr(err));
         } finally {
             setLoading(false);
         }
@@ -62,7 +64,7 @@ const Login = () => {
             setInfo("Account confirmed! Please sign in.");
             setView(VIEWS.LOGIN);
         } catch (err) {
-            setError(err);
+            setError(toStr(err));
         } finally {
             setLoading(false);
         }
