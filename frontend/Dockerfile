@@ -7,6 +7,16 @@ COPY package.json package-lock.json ./
 RUN npm install
 
 COPY . .
+
+# Accept Cognito credentials as build-time args so Vite bakes them in
+ARG VITE_COGNITO_USER_POOL_ID
+ARG VITE_COGNITO_CLIENT_ID
+ARG VITE_API_BASE=/api
+
+ENV VITE_COGNITO_USER_POOL_ID=$VITE_COGNITO_USER_POOL_ID
+ENV VITE_COGNITO_CLIENT_ID=$VITE_COGNITO_CLIENT_ID
+ENV VITE_API_BASE=$VITE_API_BASE
+
 RUN npm run build
 
 # Production stage
