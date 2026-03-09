@@ -12,3 +12,6 @@ nltk==3.8.1
 spacy==2.3.5
 numpy<2.0.0
 pdfminer.six==20221105
+pytest==8.3.2
+pytest-cov==5.0.0
+pytest-asyncio==0.23.8
