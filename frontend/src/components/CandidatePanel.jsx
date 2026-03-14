@@ -12,8 +12,8 @@ const ScoreRing = ({ value = 0 }) => {
         <svg width="130" height="130" className="ring-svg">
             <defs>
                 <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="#38bdf8" />
-                    <stop offset="100%" stopColor="#a78bfa" />
+                    <stop offset="0%" stopColor="#ffffff" />
+                    <stop offset="100%" stopColor="#666666" />
                 </linearGradient>
             </defs>
             <circle className="ring-bg" cx="65" cy="65" r={r} />
@@ -116,7 +116,7 @@ const CandidatePanel = ({ candidate, onRecalculate, onDelete }) => {
                         style={{ width: "100%", minHeight: 620, border: "none" }}
                     />
                 ) : (
-                    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: 620, color: "#64748b", flexDirection: "column", gap: "0.5rem" }}>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: 620, color: "var(--text-muted)", flexDirection: "column", gap: "0.5rem" }}>
                         <span style={{ fontSize: "3rem" }}>📄</span>
                         <span>No PDF preview available</span>
                         <small>Re-upload the resume to enable preview</small>
@@ -207,7 +207,7 @@ const CandidatePanel = ({ candidate, onRecalculate, onDelete }) => {
                             fontFamily: "Inter, sans-serif",
                             transition: "all 0.2s",
                         }}
-                        onMouseOver={(e) => { e.currentTarget.style.background = "var(--red)"; e.currentTarget.style.color = "#020617"; }}
+                        onMouseOver={(e) => { e.currentTarget.style.background = "var(--red)"; e.currentTarget.style.color = "#000000"; }}
                         onMouseOut={(e) => { e.currentTarget.style.background = "rgba(248,113,113,0.08)"; e.currentTarget.style.color = "var(--red)"; }}
                     >
                         {deleting ? "Deleting…" : "🗑 Delete Resume"}

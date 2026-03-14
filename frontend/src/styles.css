@@ -7,18 +7,18 @@
 }
 
 :root {
-  --bg-base: #060d1f;
-  --bg-surface: #0d1b33;
-  --bg-card: #0f2044;
-  --border: #1e3a5f;
-  --accent: #38bdf8;
-  --accent-glow: rgba(56, 189, 248, 0.25);
+  --bg-base: #000000;
+  --bg-surface: #111111;
+  --bg-card: #161616;
+  --border: #2a2a2a;
+  --accent: #ffffff;
+  --accent-glow: rgba(255, 255, 255, 0.12);
   --green: #34d399;
   --red: #f87171;
   --yellow: #fbbf24;
-  --purple: #a78bfa;
-  --text: #e2e8f0;
-  --text-muted: #64748b;
+  --purple: #d1d1d1;
+  --text: #ffffff;
+  --text-muted: #a0a0a0;
   --radius: 12px;
   --radius-lg: 20px;
 }
@@ -28,7 +28,7 @@ body {
   background: var(--bg-base);
   color: var(--text);
   min-height: 100vh;
-  background-image: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(56, 189, 248, 0.08), transparent);
+  background-image: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(255, 255, 255, 0.05), transparent);
 }
 
 /* ── Nav ── */
@@ -54,7 +54,7 @@ body {
 .brand {
   font-weight: 800;
   font-size: 1.1rem;
-  background: linear-gradient(135deg, var(--accent), var(--purple));
+  background: linear-gradient(135deg, #ffffff, #888888);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -129,7 +129,6 @@ body {
 }
 
 /* ── Resume History ── */
-.resume-history {}
 
 .resume-history h2 {
   font-size: 1rem;
@@ -268,7 +267,7 @@ body {
 .breakdown-bar-fill {
   height: 100%;
   border-radius: 99px;
-  background: linear-gradient(90deg, var(--accent), var(--purple));
+  background: linear-gradient(90deg, #ffffff, #666666);
   transition: width 1s cubic-bezier(.4, 0, .2, 1);
 }
 
@@ -452,8 +451,8 @@ button[type="submit"] {
   align-self: flex-start;
   padding: 0.7rem 1.6rem;
   border-radius: 999px;
-  background: linear-gradient(135deg, var(--accent), var(--purple));
-  color: #020617;
+  background: linear-gradient(135deg, #ffffff, #d1d1d1);
+  color: #000;
   border: none;
   cursor: pointer;
   font-weight: 700;

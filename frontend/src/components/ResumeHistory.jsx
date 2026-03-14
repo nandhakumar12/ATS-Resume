@@ -26,8 +26,8 @@ const ResumeHistory = ({ onSelect }) => {
             <li
               key={r.id || i}
               onClick={() => onSelect && onSelect(r)}
-              style={{ cursor: 'pointer', padding: '10px', borderBottom: '1px solid #334155', transition: 'background-color 0.2s' }}
-              onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#1e293b'}
+              style={{ cursor: 'pointer', padding: '10px', borderBottom: '1px solid var(--border)', transition: 'background-color 0.2s' }}
+              onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'var(--bg-surface)'}
               onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
             >
               <strong>{r.filename}</strong>

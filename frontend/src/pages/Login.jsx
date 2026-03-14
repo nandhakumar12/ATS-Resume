@@ -74,14 +74,14 @@ const Login = () => {
         <div style={{
             display: "flex", minHeight: "100vh", alignItems: "center",
             justifyContent: "center", background: "var(--bg-base)",
-            backgroundImage: "radial-gradient(ellipse 80% 60% at 50% -10%, rgba(56,189,248,0.12), transparent)",
+            backgroundImage: "radial-gradient(ellipse 80% 60% at 50% -10%, rgba(255,255,255,0.08), transparent)",
         }}>
             <div className="card" style={{ maxWidth: 420, width: "100%", padding: "2.5rem 2rem" }}>
                 {/* Logo */}
                 <div style={{ textAlign: "center", marginBottom: "2rem" }}>
                     <div style={{
                         width: 60, height: 60, borderRadius: "50%",
-                        background: "linear-gradient(135deg, #38bdf8, #a78bfa)",
+                        background: "linear-gradient(135deg, #ffffff, #888888)",
                         display: "flex", alignItems: "center", justifyContent: "center",
                         margin: "0 auto 1rem", fontSize: "1.6rem",
                     }}>🤖</div>
@@ -102,7 +102,7 @@ const Login = () => {
                     <form onSubmit={handleLogin} style={{ display: "flex", flexDirection: "column", gap: "0.9rem" }}>
                         <input style={inputStyle} type="email" placeholder="Email address" value={email} onChange={e => setEmail(e.target.value)} required />
                         <input style={inputStyle} type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} required />
-                        <button type="submit" disabled={loading} style={{ padding: "0.8rem", borderRadius: "10px", background: "linear-gradient(135deg, #38bdf8, #a78bfa)", color: "#020617", border: "none", fontWeight: 700, fontSize: "1rem", fontFamily: "Inter, sans-serif", cursor: "pointer", transition: "opacity 0.2s", opacity: loading ? 0.7 : 1 }}>
+                        <button type="submit" disabled={loading} style={{ padding: "0.8rem", borderRadius: "10px", background: "linear-gradient(135deg, #ffffff, #d1d1d1)", color: "#000", border: "none", fontWeight: 700, fontSize: "1rem", fontFamily: "Inter, sans-serif", cursor: "pointer", transition: "opacity 0.2s", opacity: loading ? 0.7 : 1 }}>
                             {loading ? "Signing in…" : "Sign In"}
                         </button>
                         <p style={{ textAlign: "center", fontSize: "0.85rem", color: "var(--text-muted)", marginTop: "0.5rem" }}>
@@ -117,7 +117,7 @@ const Login = () => {
                     <form onSubmit={handleSignUp} style={{ display: "flex", flexDirection: "column", gap: "0.9rem" }}>
                         <input style={inputStyle} type="email" placeholder="Email address" value={email} onChange={e => setEmail(e.target.value)} required />
                         <input style={inputStyle} type="password" placeholder="Password (min 8 chars)" value={password} onChange={e => setPassword(e.target.value)} required minLength={8} />
-                        <button type="submit" disabled={loading} style={{ padding: "0.8rem", borderRadius: "10px", background: "linear-gradient(135deg, #38bdf8, #a78bfa)", color: "#020617", border: "none", fontWeight: 700, fontSize: "1rem", fontFamily: "Inter, sans-serif", cursor: "pointer", opacity: loading ? 0.7 : 1 }}>
+                        <button type="submit" disabled={loading} style={{ padding: "0.8rem", borderRadius: "10px", background: "linear-gradient(135deg, #ffffff, #d1d1d1)", color: "#000", border: "none", fontWeight: 700, fontSize: "1rem", fontFamily: "Inter, sans-serif", cursor: "pointer", opacity: loading ? 0.7 : 1 }}>
                             {loading ? "Creating account…" : "Create Account"}
                         </button>
                         <p style={{ textAlign: "center", fontSize: "0.85rem", color: "var(--text-muted)", marginTop: "0.5rem" }}>
@@ -131,7 +131,7 @@ const Login = () => {
                 {view === VIEWS.CONFIRM && (
                     <form onSubmit={handleConfirm} style={{ display: "flex", flexDirection: "column", gap: "0.9rem" }}>
                         <input style={inputStyle} type="text" placeholder="6-digit verification code" value={code} onChange={e => setCode(e.target.value)} required maxLength={6} />
-                        <button type="submit" disabled={loading} style={{ padding: "0.8rem", borderRadius: "10px", background: "linear-gradient(135deg, #38bdf8, #a78bfa)", color: "#020617", border: "none", fontWeight: 700, fontSize: "1rem", fontFamily: "Inter, sans-serif", cursor: "pointer", opacity: loading ? 0.7 : 1 }}>
+                        <button type="submit" disabled={loading} style={{ padding: "0.8rem", borderRadius: "10px", background: "linear-gradient(135deg, #ffffff, #d1d1d1)", color: "#000", border: "none", fontWeight: 700, fontSize: "1rem", fontFamily: "Inter, sans-serif", cursor: "pointer", opacity: loading ? 0.7 : 1 }}>
                             {loading ? "Verifying…" : "Verify Email"}
                         </button>
                     </form>
