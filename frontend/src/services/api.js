@@ -39,18 +39,18 @@ export async function fetchResumeHistory() {
 }
 
 export async function getResume(resumeId) {
-  return request(`/resumes/${resumeId}`);
+  return request(`/resumes/${encodeURIComponent(resumeId)}`);
 }
 
 export async function updateResumeSkills(resumeId, skills) {
-  return request(`/resumes/${resumeId}/skills`, {
+  return request(`/resumes/${encodeURIComponent(resumeId)}/skills`, {
     method: "PATCH",
     body: JSON.stringify({ skills }),
   });
 }
 
 export async function deleteResume(resumeId) {
-  return request(`/resumes/${resumeId}`, { method: "DELETE" });
+  return request(`/resumes/${encodeURIComponent(resumeId)}`, { method: "DELETE" });
 }
 
 export async function scoreResume(payload) {
@@ -75,9 +75,9 @@ export async function createJob(payload) {
 }
 
 export async function updateJob(jobId, payload) {
-  return request(`/jobs/${jobId}`, { method: "PUT", body: JSON.stringify(payload) });
+  return request(`/jobs/${encodeURIComponent(jobId)}`, { method: "PUT", body: JSON.stringify(payload) });
 }
 
 export async function deleteJob(jobId) {
-  return request(`/jobs/${jobId}`, { method: "DELETE" });
+  return request(`/jobs/${encodeURIComponent(jobId)}`, { method: "DELETE" });
 }
