@@ -1,5 +1,6 @@
 services:
   backend:
+    image: ${ECR_REGISTRY:-ats}-backend:latest
     build:
       context: ./backend
       dockerfile: Dockerfile
@@ -7,6 +8,9 @@ services:
     ports:
       - "8000:8000"
     environment:
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}
       - AWS_REGION=${AWS_REGION:-us-east-1}
       - DDB_USERS_TABLE=${DDB_USERS_TABLE:-ats_users}
       - DDB_RESUMES_TABLE=${DDB_RESUMES_TABLE:-ats_resumes}
@@ -24,6 +28,7 @@ services:
     restart: unless-stopped
 
   frontend:
+    image: ${ECR_REGISTRY:-ats}-frontend:latest
     build:
       context: ./frontend
       dockerfile: Dockerfile
@@ -43,12 +48,13 @@ services:
     restart: unless-stopped
 
   nginx:
-    image: nginx:alpine
+    image: ${ECR_REGISTRY:-ats}-nginx:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
     container_name: ats-nginx
     ports:
       - "80:80"
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
       - backend
       - frontend
