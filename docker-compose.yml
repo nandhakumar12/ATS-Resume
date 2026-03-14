@@ -19,6 +19,8 @@ services:
       - COGNITO_LOGOUT_URI=${COGNITO_LOGOUT_URI}
     networks:
       - ats-network
+    volumes:
+      - ./backend/uploads:/app/uploads
     restart: unless-stopped
 
   frontend:

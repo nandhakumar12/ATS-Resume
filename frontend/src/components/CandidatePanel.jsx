@@ -152,7 +152,7 @@ const CandidatePanel = ({ candidate, onRecalculate, onDelete }) => {
 
                 {/* Editable Skills */}
                 <div className="card">
-                    <div style={{ fontWeight: 700, marginBottom: "0.75rem", color: "var(--green)", fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                    <div style={{ fontWeight: 700, marginBottom: "0.75rem", color: "var(--text)", fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.08em" }}>
                         Parsed Skills <span style={{ color: "var(--text-muted)", fontWeight: 400, textTransform: "none", fontSize: "0.75rem" }}>(click × to remove)</span>
                     </div>
                     <div className="skills-grid">

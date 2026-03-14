@@ -79,12 +79,6 @@ const Login = () => {
             <div className="card" style={{ maxWidth: 420, width: "100%", padding: "2.5rem 2rem" }}>
                 {/* Logo */}
                 <div style={{ textAlign: "center", marginBottom: "2rem" }}>
-                    <div style={{
-                        width: 60, height: 60, borderRadius: "50%",
-                        background: "linear-gradient(135deg, #ffffff, #888888)",
-                        display: "flex", alignItems: "center", justifyContent: "center",
-                        margin: "0 auto 1rem", fontSize: "1.6rem",
-                    }}>🤖</div>
                     <h1 style={{ fontSize: "1.5rem", fontWeight: 800, marginBottom: "0.3rem" }}>AI ATS Platform</h1>
                     <p style={{ color: "var(--text-muted)", fontSize: "0.88rem" }}>
                         {view === VIEWS.LOGIN && "Sign in to your account"}
@@ -137,9 +131,6 @@ const Login = () => {
                     </form>
                 )}
 
-                <p style={{ marginTop: "1.5rem", textAlign: "center", fontSize: "0.75rem", color: "var(--text-muted)" }}>
-                    Secured by AWS Cognito · OAuth 2.0 / OIDC
-                </p>
             </div>
         </div>
     );
