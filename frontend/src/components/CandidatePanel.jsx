@@ -48,6 +48,7 @@ const Bar = ({ label, value = 0 }) => (
 
 const CandidatePanel = ({ candidate, onRecalculate, onDelete }) => {
     const [editedSkills, setEditedSkills] = useState([]);
+    const [removedParsedSkills, setRemovedParsedSkills] = useState([]);
     const [newSkill, setNewSkill] = useState("");
     const [score, setScore] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -56,7 +57,7 @@ const CandidatePanel = ({ candidate, onRecalculate, onDelete }) => {
     const parsed = candidate?.parsed_data || {};
     const resumeId = candidate?.id;
     const fileUrl = parsed?.file_url;
-    const existingSkills = parsed?.skills || [];
+    const existingSkills = (parsed?.skills || []).filter(s => !removedParsedSkills.includes(s));
     const allSkills = [...new Set([...existingSkills, ...editedSkills])];
 
     const handleAddSkill = () => {
@@ -67,8 +68,12 @@ const CandidatePanel = ({ candidate, onRecalculate, onDelete }) => {
         setNewSkill("");
     };
 
-    const handleRemoveSkill = (skill) => {
-        setEditedSkills((prev) => prev.filter((s) => s !== skill));
+    const handleRemoveSkill = (skill, isExisting = false) => {
+        if (isExisting) {
+            setRemovedParsedSkills((prev) => [...prev, skill]);
+        } else {
+            setEditedSkills((prev) => prev.filter((s) => s !== skill));
+        }
     };
 
     const handleDelete = async () => {
@@ -157,7 +162,10 @@ const CandidatePanel = ({ candidate, onRecalculate, onDelete }) => {
                     </div>
                     <div className="skills-grid">
                         {existingSkills.map((s) => (
-                            <span key={s} className="skill-tag matched">{s}</span>
+                            <span key={s} className="skill-tag matched">
+                                {s}
+                                <button onClick={() => handleRemoveSkill(s, true)} aria-label={`Remove ${s}`}>×</button>
+                            </span>
                         ))}
                         {editedSkills.map((s) => (
                             <span key={s} className="skill-tag custom">

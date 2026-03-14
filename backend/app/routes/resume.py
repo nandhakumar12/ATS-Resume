@@ -105,9 +105,9 @@ async def update_resume_skills(
     if not item:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Resume not found")
 
-    # Merge new skills into parsed_data
-    parsed = _from_decimal(item.get("parsed_data", {}))
-    parsed["skills"] = list({*(parsed.get("skills") or []), *payload["skills"]})
+    # Replace skills with the provided list (allows removals)
+    parsed = _from_decimal(item.get("parsed_data", {}));
+    parsed["skills"] = payload["skills"]
     parsed["_custom_skills"] = payload["skills"]
 
     table.update_item(

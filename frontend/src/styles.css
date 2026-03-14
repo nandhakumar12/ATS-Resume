@@ -292,7 +292,7 @@ body {
 }
 
 .skill-tag.matched {
-  background: rgba(52, 211, 153, 0.1);
+  background: rgba(255, 255, 255, 0.08);
   border-color: var(--green);
   color: var(--green);
 }
@@ -304,7 +304,7 @@ body {
 }
 
 .skill-tag.custom {
-  background: rgba(167, 139, 250, 0.1);
+  background: rgba(255, 255, 255, 0.12);
   border-color: var(--purple);
   color: var(--purple);
 }
