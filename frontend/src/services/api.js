@@ -18,7 +18,7 @@ async function request(path, options = {}) {
     },
     ...options,
   });
-  if (res.status === 204) return null; // DELETE returns no body
+  if (res.status === 204) return null;
   if (!res.ok) {
     const err = await res.json().catch(() => ({ detail: res.statusText }));
     throw new Error(err.detail || `API error: ${res.status}`);
@@ -26,7 +26,6 @@ async function request(path, options = {}) {
   return res.json();
 }
 
-// ── Resumes ────────────────────────────────────────────────────────────────
 
 export async function uploadResume(file) {
   const form = new FormData();
@@ -64,7 +63,6 @@ export async function scoreResume(payload) {
   });
 }
 
-// ── Jobs ──────────────────────────────────────────────────────────────────
 
 export async function fetchJobs() {
   return request("/jobs/");

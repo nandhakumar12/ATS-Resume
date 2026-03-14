@@ -10,11 +10,10 @@ from app.models.user import User
 
 router = APIRouter()
 
-# ── Cognito Hosted UI helpers ──────────────────────────────────────────────────
 
 def _cognito_base_url() -> str:
     settings = get_cognito_settings()
-    domain = os.getenv("COGNITO_DOMAIN", "")  # e.g. ats-resume.auth.us-east-1.amazoncognito.com
+    domain = os.getenv("COGNITO_DOMAIN", "")
     return f"https://{domain}"
 
 
@@ -78,7 +77,7 @@ async def cognito_callback(code: str):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=resp.json())
 
     tokens = resp.json()
-    # In production you'd set HttpOnly cookies; here we return JSON for simplicity
+    return JSONResponse(content={"access_token": auth_res["AuthenticationResult"]["AccessToken"]})
     return {
         "access_token": tokens.get("access_token"),
         "id_token": tokens.get("id_token"),
@@ -87,7 +86,6 @@ async def cognito_callback(code: str):
     }
 
 
-# ── Protected user-info endpoint ───────────────────────────────────────────────
 
 @router.get("/me", response_model=Dict[str, Any])
 async def read_users_me(current_user: User = Depends(get_current_user)) -> Dict[str, Any]:

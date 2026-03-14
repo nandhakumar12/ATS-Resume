@@ -6,12 +6,11 @@ def score_resume_against_job(resume_text: str, job_description: str) -> ResumeSc
     semantic_similarity = compute_semantic_similarity(resume_text, job_description)
     matched_skills, missing_skills = analyze_skill_gap(resume_text, job_description)
 
-    # Simple heuristic scores; you can later learn weights with ML
     total_skills = max(len(matched_skills) + len(missing_skills), 1)
     skill_match = len(matched_skills) / total_skills
 
-    experience_alignment = semantic_similarity  # placeholder proxy
-    keyword_score = skill_match  # placeholder
+    experience_alignment = semantic_similarity
+    keyword_score = skill_match
 
     overall_score = (
         0.35 * skill_match

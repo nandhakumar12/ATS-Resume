@@ -92,9 +92,8 @@ const CandidatePanel = ({ candidate, onRecalculate, onDelete }) => {
     const handleRecalculate = async () => {
         setLoading(true);
         try {
-            // Persist edited skills to DynamoDB first
-            if (editedSkills.length > 0 && resumeId) {
-                await updateResumeSkills(resumeId, editedSkills);
+            if (resumeId) {
+                await updateResumeSkills(resumeId, allSkills);
             }
             const resumeText = allSkills.join(" ") + " " + (parsed.designation || []).join(" ");
             const result = await scoreResume({

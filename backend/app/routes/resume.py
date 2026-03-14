@@ -13,10 +13,9 @@ from app.services.similarity_engine import compute_semantic_similarity
 
 router = APIRouter()
 
-OWNER_ID = "demo-user"  # Replace with current_user.id once auth is wired
+OWNER_ID = "demo-user"
 
 
-# ── helpers ──────────────────────────────────────────────────────────────────
 
 def _to_decimal(obj: Any) -> Any:
     """Recursively convert floats → Decimal for DynamoDB."""
@@ -43,7 +42,6 @@ def _item_to_response(item: Dict) -> ResumeResponse:
     )
 
 
-# ── CREATE ────────────────────────────────────────────────────────────────────
 
 @router.post("/upload", response_model=ResumeResponse, status_code=status.HTTP_201_CREATED)
 async def upload_resume(file: UploadFile = File(...)) -> ResumeResponse:
@@ -64,7 +62,6 @@ async def upload_resume(file: UploadFile = File(...)) -> ResumeResponse:
     )
 
 
-# ── READ (list) ───────────────────────────────────────────────────────────────
 
 @router.get("/history", response_model=List[ResumeResponse])
 async def list_resumes() -> List[ResumeResponse]:
@@ -73,7 +70,6 @@ async def list_resumes() -> List[ResumeResponse]:
     return [_item_to_response(i) for i in resp.get("Items", [])]
 
 
-# ── READ (single) ─────────────────────────────────────────────────────────────
 
 @router.get("/{resume_id}", response_model=ResumeResponse)
 async def get_resume(resume_id: str = Path(...)) -> ResumeResponse:
@@ -85,7 +81,6 @@ async def get_resume(resume_id: str = Path(...)) -> ResumeResponse:
     return _item_to_response(item)
 
 
-# ── UPDATE ────────────────────────────────────────────────────────────────────
 
 @router.patch("/{resume_id}/skills", response_model=ResumeResponse)
 async def update_resume_skills(
@@ -105,7 +100,6 @@ async def update_resume_skills(
     if not item:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Resume not found")
 
-    # Replace skills with the provided list (allows removals)
     parsed = _from_decimal(item.get("parsed_data", {}));
     parsed["skills"] = payload["skills"]
     parsed["_custom_skills"] = payload["skills"]
@@ -123,7 +117,6 @@ async def update_resume_skills(
     )
 
 
-# ── DELETE ────────────────────────────────────────────────────────────────────
 
 @router.delete("/{resume_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_resume(resume_id: str = Path(...)) -> None:
@@ -134,17 +127,15 @@ async def delete_resume(resume_id: str = Path(...)) -> None:
     if not item:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Resume not found")
 
-    # Also remove uploaded PDF if it exists
     file_url: str = (item.get("parsed_data") or {}).get("file_url", "")
     if file_url:
-        local_path = file_url.lstrip("/api/")  # e.g. uploads/xyz.pdf
+        local_path = file_url.lstrip("/api/")
         if os.path.exists(local_path):
             os.remove(local_path)
 
     table.delete_item(Key={"resume_id": resume_id})
 
 
-# ── SCORE ─────────────────────────────────────────────────────────────────────
 
 @router.post("/score", response_model=ResumeScoreResponse)
 async def score_resume(payload: ResumeCreate) -> ResumeScoreResponse:

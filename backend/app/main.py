@@ -8,7 +8,6 @@ from app.routes import auth, resume, jobs
 
 os.makedirs("uploads", exist_ok=True)
 
-# Load environment variables from .env file
 load_dotenv()
 
 

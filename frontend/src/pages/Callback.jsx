@@ -23,14 +23,12 @@ const Callback = ({ setPage }) => {
                 const tokens = await res.json();
                 storeTokens(tokens);
 
-                // Fetch user profile with the new id_token
                 const meRes = await fetch("/api/auth/me", {
                     headers: { Authorization: `Bearer ${tokens.id_token}` },
                 });
                 if (meRes.ok) {
                     setUser(await meRes.json());
                 }
-                // Clear ?code= from the URL then go to dashboard
                 window.history.replaceState({}, document.title, "/");
                 setPage("dashboard");
             } catch (err) {

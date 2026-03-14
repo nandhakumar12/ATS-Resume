@@ -5,10 +5,9 @@ const AuthContext = createContext(null);
 const TOKEN_KEY = "ats_id_token";
 
 export function AuthProvider({ children }) {
-    const [user, setUser] = useState(null);   // { email, idToken }
+    const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    // Restore session on page refresh
     useEffect(() => {
         getCurrentSession()
             .then(({ idToken, email }) => {

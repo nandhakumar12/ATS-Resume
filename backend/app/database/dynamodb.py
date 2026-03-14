@@ -11,7 +11,7 @@ def get_dynamodb_resource():
     Uses env vars so you can point to DynamoDB Local in dev and AWS in prod.
     """
     region = os.getenv("AWS_REGION", "us-east-1")
-    endpoint_url = os.getenv("DYNAMODB_ENDPOINT_URL")  # e.g. http://dynamodb-local:8000 for local
+    endpoint_url = os.getenv("DYNAMODB_ENDPOINT_URL")
 
     params = {"region_name": region}
     if endpoint_url:

@@ -21,7 +21,6 @@ def compute_semantic_similarity(resume_text: str, job_description: str) -> float
 
 
 def extract_skills(text: str) -> List[str]:
-    # Simple placeholder; later you can plug a more advanced NER or custom skill extractor
     doc = get_nlp()(text)
     tokens = [t.text for t in doc if not t.is_stop and not t.is_punct]
     return list({t.lower() for t in tokens})

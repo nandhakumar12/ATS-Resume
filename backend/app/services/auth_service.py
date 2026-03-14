@@ -10,7 +10,7 @@ from jose import JWTError, jwt
 from app.models.user import User, UserRole
 
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")  # token endpoint handled by Cognito, not this API
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
 class CognitoSettings:

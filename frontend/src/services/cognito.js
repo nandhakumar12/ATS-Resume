@@ -4,8 +4,6 @@ import {
     AuthenticationDetails,
 } from "amazon-cognito-identity-js";
 
-// ── Pool config — read from env vars ─────────────────────────────────────────
-// These are injected at build time via Vite — set them in frontend/.env
 const poolData = {
     UserPoolId: import.meta.env.VITE_COGNITO_USER_POOL_ID || "",
     ClientId: import.meta.env.VITE_COGNITO_CLIENT_ID || "",
@@ -17,7 +15,6 @@ function getPool() {
     return _pool;
 }
 
-// ── Sign In ───────────────────────────────────────────────────────────────────
 /**
  * Returns the Cognito ID token (JWT) on success.
  * Throws a human-readable error string on failure.
@@ -51,7 +48,6 @@ export function signIn(email, password) {
     });
 }
 
-// ── Sign Up ───────────────────────────────────────────────────────────────────
 export function signUp(email, password) {
     return new Promise((resolve, reject) => {
         const pool = getPool();
@@ -62,7 +58,6 @@ export function signUp(email, password) {
     });
 }
 
-// ── Confirm Sign Up ───────────────────────────────────────────────────────────
 export function confirmSignUp(email, code) {
     return new Promise((resolve, reject) => {
         const pool = getPool();
@@ -74,14 +69,12 @@ export function confirmSignUp(email, code) {
     });
 }
 
-// ── Sign Out ──────────────────────────────────────────────────────────────────
 export function signOut() {
     const pool = getPool();
     const user = pool.getCurrentUser();
     if (user) user.signOut();
 }
 
-// ── Get current session (restore on page refresh) ────────────────────────────
 export function getCurrentSession() {
     return new Promise((resolve, reject) => {
         const pool = getPool();

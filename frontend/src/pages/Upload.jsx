@@ -19,7 +19,6 @@ const Upload = ({ setGlobalScore, setPage }) => {
 
       if (jobDescription && result.parsed_data) {
         setStatus("Computing ATS Score...");
-        // Construct a raw text representation from the parsed data for the scoring engine
         const parsed = result.parsed_data;
         const resumeText = [
           ...(parsed.skills || []),

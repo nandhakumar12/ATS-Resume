@@ -11,7 +11,6 @@ from app.services.auth_service import get_current_user
 router = APIRouter()
 
 
-# ── CREATE ────────────────────────────────────────────────────────────────────
 
 @router.post("/", response_model=JobResponse, status_code=status.HTTP_201_CREATED)
 async def create_job(
@@ -35,7 +34,6 @@ async def create_job(
     )
 
 
-# ── READ (list) ───────────────────────────────────────────────────────────────
 
 @router.get("/", response_model=List[JobResponse])
 async def list_jobs(
@@ -54,7 +52,6 @@ async def list_jobs(
     ]
 
 
-# ── READ (single) ─────────────────────────────────────────────────────────────
 
 @router.get("/{job_id}", response_model=JobResponse)
 async def get_job(
@@ -74,7 +71,6 @@ async def get_job(
     )
 
 
-# ── UPDATE ────────────────────────────────────────────────────────────────────
 
 @router.put("/{job_id}", response_model=JobResponse)
 async def update_job(
@@ -100,7 +96,6 @@ async def update_job(
     )
 
 
-# ── DELETE ────────────────────────────────────────────────────────────────────
 
 @router.delete("/{job_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_job(

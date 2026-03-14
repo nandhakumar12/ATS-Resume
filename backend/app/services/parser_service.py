@@ -6,7 +6,6 @@ import time
 async def parse_resume_file(file: UploadFile) -> Dict[str, Any]:
     content = await file.read()
     
-    # Generate a unique safe filename
     safe_filename = file.filename.replace(" ", "_").replace("/", "_")
     unique_filename = f"{int(time.time())}_{safe_filename}"
     file_path = os.path.join("uploads", unique_filename)
