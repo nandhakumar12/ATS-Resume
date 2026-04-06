@@ -51,28 +51,48 @@ const Upload = ({ setGlobalScore, setPage }) => {
   };
 
   return (
-    <div className="upload-page">
-      <h1>Upload Resume</h1>
-      <form onSubmit={handleSubmit} className="upload-form">
-        <label>
-          Resume File
-          <input
-            type="file"
-            accept=".pdf,.doc,.docx"
-            onChange={(e) => setFile(e.target.files[0])}
-          />
-        </label>
-        <label>
-          JobDescription (optional)
-          <textarea
-            value={jobDescription}
-            onChange={(e) => setJobDescription(e.target.value)}
-            placeholder="Paste the target job description here..."
-          />
-        </label>
-        <button type="submit">Upload & Analyze</button>
-      </form>
-      {status && <p className="status-text">{status}</p>}
+    <div className="upload-page" style={{ maxWidth: "800px", margin: "0 auto" }}>
+      <h1 style={{ marginBottom: "1.5rem" }}>Upload Candidate Resume</h1>
+      <div className="glass-card">
+        <form onSubmit={handleSubmit} className="upload-form" style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+          <div>
+            <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 600, color: "var(--text-muted)" }}>
+              Resume File (PDF/DOCX)
+            </label>
+            <input
+              type="file"
+              accept=".pdf,.doc,.docx"
+              onChange={(e) => setFile(e.target.files[0])}
+              style={{
+                width: "100%", padding: "0.75rem", background: "rgba(255,255,255,0.05)",
+                border: "1px dashed var(--glass-border)", borderRadius: "8px", color: "var(--text)"
+              }}
+            />
+          </div>
+          <div>
+            <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 600, color: "var(--text-muted)" }}>
+              Job Description (Optional for instant scoring)
+            </label>
+            <textarea
+              value={jobDescription}
+              onChange={(e) => setJobDescription(e.target.value)}
+              placeholder="Paste the target job description here..."
+              style={{
+                width: "100%", minHeight: "120px", padding: "0.75rem", background: "rgba(255,255,255,0.05)",
+                border: "1px solid var(--glass-border)", borderRadius: "8px", color: "var(--text)", resize: "vertical"
+              }}
+            />
+          </div>
+          <button type="submit" className="btn-primary" style={{ marginTop: "0.5rem" }}>
+            Upload & Analyze
+          </button>
+        </form>
+        {status && (
+          <p style={{ marginTop: "1.5rem", textAlign: "center", color: "var(--accent)" }}>
+            {status}
+          </p>
+        )}
+      </div>
     </div>
   );
 };

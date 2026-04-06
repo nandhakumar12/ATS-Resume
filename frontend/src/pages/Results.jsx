@@ -33,28 +33,49 @@ const Results = ({ globalScore, setGlobalScore }) => {
   };
 
   return (
-    <div className="results-page">
-      <h1>ATS Score & Skill Gaps</h1>
-      <form onSubmit={handleScore} className="results-form">
-        <div className="form-row">
-          <textarea
-            value={resumeText}
-            onChange={(e) => setResumeText(e.target.value)}
-            placeholder="Paste resume text here..."
-          />
-          <textarea
-            value={jobDescription}
-            onChange={(e) => setJobDescription(e.target.value)}
-            placeholder="Paste job description here..."
-          />
-        </div>
-        <button type="submit">Compute ATS Score</button>
-      </form>
-      {status && <p className="status-text">{status}</p>}
+    <div className="results-page" style={{ maxWidth: "1200px", margin: "0 auto" }}>
+      <h1 style={{ marginBottom: "1.5rem" }}>ATS Manual Scoring Engine</h1>
+      <div className="glass-card" style={{ marginBottom: "2rem" }}>
+        <form onSubmit={handleScore} className="results-form" style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem" }}>
+            <div>
+              <label style={{ display: "block", marginBottom: "0.5rem", color: "var(--text-muted)" }}>Raw Resume Text</label>
+              <textarea
+                value={resumeText}
+                onChange={(e) => setResumeText(e.target.value)}
+                placeholder="Paste resume text or parsed skills here..."
+                style={{
+                  width: "100%", height: "150px", padding: "1rem", background: "rgba(255,255,255,0.05)",
+                  border: "1px solid var(--glass-border)", borderRadius: "8px", color: "var(--text)", resize: "vertical"
+                }}
+              />
+            </div>
+            <div>
+              <label style={{ display: "block", marginBottom: "0.5rem", color: "var(--text-muted)" }}>Job Description</label>
+              <textarea
+                value={jobDescription}
+                onChange={(e) => setJobDescription(e.target.value)}
+                placeholder="Paste job description here..."
+                style={{
+                  width: "100%", height: "150px", padding: "1rem", background: "rgba(255,255,255,0.05)",
+                  border: "1px solid var(--glass-border)", borderRadius: "8px", color: "var(--text)", resize: "vertical"
+                }}
+              />
+            </div>
+          </div>
+          <button type="submit" className="btn-primary" style={{ maxWidth: "300px", margin: "0 auto" }}>
+            Compute ATS Score
+          </button>
+        </form>
+        {status && <p style={{ marginTop: "1rem", textAlign: "center", color: "var(--accent)" }}>{status}</p>}
+      </div>
+      
       {score && (
-        <div className="results-panels">
+        <div className="results-panels" style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
           <ScoreCard score={score} />
-          <SkillGapChart score={score} />
+          <div className="glass-card">
+            <SkillGapChart score={score} />
+          </div>
         </div>
       )}
     </div>

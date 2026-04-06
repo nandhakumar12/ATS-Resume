@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { fetchResumeHistory, fetchJobs } from "../services/api";
+import { fetchResumeHistory, fetchJobs, createJob } from "../services/api";
 import CandidatePanel from "../components/CandidatePanel";
 
 const Dashboard = ({ globalScore, setGlobalScore }) => {
@@ -8,6 +8,9 @@ const Dashboard = ({ globalScore, setGlobalScore }) => {
   const [loading, setLoading] = useState(true);
   const [jobs, setJobs] = useState([]);
   const [selectedJob, setSelectedJob] = useState(null);
+  const [showJobModal, setShowJobModal] = useState(false);
+  const [newJobTitle, setNewJobTitle] = useState("");
+  const [newJobDesc, setNewJobDesc] = useState("");
 
   useEffect(() => {
     (async () => {
@@ -37,6 +40,22 @@ const Dashboard = ({ globalScore, setGlobalScore }) => {
     setSelected(null);
   };
 
+  const handleCreateJob = async (e) => {
+    e.preventDefault();
+    if (!newJobTitle || !newJobDesc) return;
+    try {
+      const created = await createJob({ title: newJobTitle, description: newJobDesc });
+      setJobs((prev) => [...prev, created]);
+      setSelectedJob(created);
+      setShowJobModal(false);
+      setNewJobTitle("");
+      setNewJobDesc("");
+    } catch (err) {
+      console.error("Failed to create job", err);
+      alert("Failed to create job.");
+    }
+  };
+
   return (
     <div className="dashboard">
       <header>
@@ -51,7 +70,15 @@ const Dashboard = ({ globalScore, setGlobalScore }) => {
         <div className="card resume-history">
           {/* Job Selector */}
           <div style={{ marginBottom: "1.2rem" }}>
-            <h2 style={{ marginBottom: "0.5rem" }}>Score Against Job</h2>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
+              <h2 style={{ marginBottom: 0 }}>Score Against Job</h2>
+              <button 
+                onClick={() => setShowJobModal(true)}
+                style={{ background: "rgba(139, 92, 246, 0.2)", color: "#c4b5fd", border: "1px solid rgba(139, 92, 246, 0.5)", borderRadius: "6px", padding: "0.2rem 0.6rem", fontSize: "0.75rem", cursor: "pointer" }}
+              >
+                + New
+              </button>
+            </div>
             {jobs.length === 0 ? (
               <p style={{ color: "var(--text-muted)", fontSize: "0.82rem" }}>No jobs found. Create one first.</p>
             ) : (
@@ -131,6 +158,29 @@ const Dashboard = ({ globalScore, setGlobalScore }) => {
           )}
         </div>
       </div>
+
+      {/* Create Job Modal */}
+      {showJobModal && (
+        <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", background: "rgba(0,0,0,0.7)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}>
+          <div className="glass-card" style={{ width: "100%", maxWidth: "500px" }}>
+            <h2 style={{ marginBottom: "1.5rem" }}>Create New Job</h2>
+            <form onSubmit={handleCreateJob} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+              <div>
+                <label style={{ display: "block", marginBottom: "0.5rem", fontSize: "0.85rem", color: "var(--text-muted)" }}>Job Title</label>
+                <input required value={newJobTitle} onChange={e => setNewJobTitle(e.target.value)} style={{ width: "100%", padding: "0.75rem", borderRadius: "8px", background: "rgba(255,255,255,0.05)", border: "1px solid var(--glass-border)", color: "#fff" }} />
+              </div>
+              <div>
+                <label style={{ display: "block", marginBottom: "0.5rem", fontSize: "0.85rem", color: "var(--text-muted)" }}>Job Description</label>
+                <textarea required value={newJobDesc} onChange={e => setNewJobDesc(e.target.value)} style={{ width: "100%", height: "120px", padding: "0.75rem", borderRadius: "8px", background: "rgba(255,255,255,0.05)", border: "1px solid var(--glass-border)", color: "#fff", resize: "vertical" }} />
+              </div>
+              <div style={{ display: "flex", gap: "1rem", marginTop: "1rem" }}>
+                <button type="button" onClick={() => setShowJobModal(false)} style={{ flex: 1, padding: "0.75rem", background: "rgba(255,255,255,0.1)", border: "none", color: "#fff", borderRadius: "8px", cursor: "pointer" }}>Cancel</button>
+                <button type="submit" className="btn-primary" style={{ flex: 1 }}>Save Job</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
