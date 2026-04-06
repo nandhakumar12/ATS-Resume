@@ -19,12 +19,10 @@ const ScoreRing = ({ value = 0, label = "ATS Score" }) => {
                     strokeDasharray={circ}
                     strokeDashoffset={offset}
                     stroke={color}
+                    transform="rotate(-90 65 65)"
                 />
-                <text x="65" y="62" textAnchor="middle" className="ring-text" style={{ fill: color }}>
-                    {Math.round(value)}
-                </text>
-                <text x="65" y="78" textAnchor="middle" fontSize="10" fill="var(--text-muted)">
-                    / 100
+                <text x="65" y="65" textAnchor="middle" dominantBaseline="central" className="ring-text" style={{ fill: color, fontSize: "1.5rem", fontWeight: "bold" }}>
+                    {Math.round(value)}<tspan fill="var(--text-muted)" fontSize="0.8rem">/100</tspan>
                 </text>
             </svg>
             <div className="ring-label">{label}</div>

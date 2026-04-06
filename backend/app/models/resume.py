@@ -4,8 +4,8 @@ from pydantic import BaseModel
 
 
 class ResumeCreate(BaseModel):
-    resume_id: Optional[int] = None
-    job_id: Optional[int] = None
+    resume_id: Optional[str] = None
+    job_id: Optional[str] = None
     resume_text: str
     job_description: str
 
@@ -46,6 +46,6 @@ class ResumeScore(BaseModel):
 
 
 class ResumeScoreResponse(ResumeScore):
-    resume_id: Optional[int] = None
-    job_id: Optional[int] = None
+    resume_id: Optional[str] = None
+    job_id: Optional[str] = None
 

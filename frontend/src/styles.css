@@ -65,6 +65,36 @@ body {
   letter-spacing: -0.02em;
 }
 
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.nav-links button {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.nav-links button:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.nav-links button.active {
+  color: #fff;
+  background: rgba(139, 92, 246, 0.2);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
 /* ── Layout ── */
 .app-content {
   padding: 2.5rem 4rem;
@@ -178,7 +208,6 @@ body {
 }
 
 .ring-svg {
-  transform: rotate(-90deg);
   filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.4));
 }
 
