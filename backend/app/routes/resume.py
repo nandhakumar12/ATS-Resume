@@ -152,4 +152,9 @@ async def score_resume(payload: ResumeCreate) -> ResumeScoreResponse:
         matched_skills=score.matched_skills,
         missing_skills=score.missing_skills,
         recommendation=score.recommendation,
+        # Now passing Gemini AI fields
+        ai_score=score.ai_score,
+        ai_feedback=score.ai_feedback,
+        strengths=score.strengths,
+        improvements=score.improvements
     )

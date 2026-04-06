@@ -38,6 +38,11 @@ class ResumeScore(BaseModel):
     matched_skills: List[str]
     missing_skills: List[str]
     recommendation: str
+    # Gemini AI Explainable AI (XAI) fields
+    ai_score: Optional[float] = None
+    ai_feedback: Optional[str] = None
+    strengths: Optional[List[str]] = None
+    improvements: Optional[List[str]] = None
 
 
 class ResumeScoreResponse(ResumeScore):

@@ -1,36 +1,34 @@
 import React, { useState } from "react";
 import { scoreResume, deleteResume, updateResumeSkills } from "../services/api";
+import SkillGapChart from "./SkillGapChart";
 
 /* Animated SVG ring for overall score */
-const ScoreRing = ({ value = 0 }) => {
+const ScoreRing = ({ value = 0, label = "ATS Score" }) => {
     const r = 54;
     const circ = 2 * Math.PI * r;
     const offset = circ - (value / 100) * circ;
-    const color = value >= 70 ? "#34d399" : value >= 50 ? "#fbbf24" : "#f87171";
+    const color = value >= 80 ? "var(--green)" : value >= 50 ? "var(--yellow)" : "var(--red)";
 
     return (
-        <svg width="130" height="130" className="ring-svg">
-            <defs>
-                <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="#ffffff" />
-                    <stop offset="100%" stopColor="#666666" />
-                </linearGradient>
-            </defs>
-            <circle className="ring-bg" cx="65" cy="65" r={r} />
-            <circle
-                className="ring-val"
-                cx="65" cy="65" r={r}
-                strokeDasharray={circ}
-                strokeDashoffset={offset}
-                stroke={color}
-            />
-            <text x="65" y="62" textAnchor="middle" className="ring-text" style={{ fill: color, transform: 'rotate(90deg)', transformOrigin: 'center' }}>
-                {Math.round(value)}
-            </text>
-            <text x="65" y="78" textAnchor="middle" fontSize="10" fill="#64748b" style={{ transform: 'rotate(90deg)', transformOrigin: 'center' }}>
-                / 100
-            </text>
-        </svg>
+        <div className="score-ring-container">
+            <svg width="130" height="130" className="ring-svg">
+                <circle className="ring-bg" cx="65" cy="65" r={r} />
+                <circle
+                    className="ring-val"
+                    cx="65" cy="65" r={r}
+                    strokeDasharray={circ}
+                    strokeDashoffset={offset}
+                    stroke={color}
+                />
+                <text x="65" y="62" textAnchor="middle" className="ring-text" style={{ fill: color }}>
+                    {Math.round(value)}
+                </text>
+                <text x="65" y="78" textAnchor="middle" fontSize="10" fill="var(--text-muted)">
+                    / 100
+                </text>
+            </svg>
+            <div className="ring-label">{label}</div>
+        </div>
     );
 };
 
@@ -38,7 +36,7 @@ const Bar = ({ label, value = 0 }) => (
     <div className="breakdown-row">
         <div className="breakdown-label">
             <span>{label}</span>
-            <span>{(value * 100).toFixed(1)}%</span>
+            <span>{(value * 100).toFixed(0)}%</span>
         </div>
         <div className="breakdown-bar-bg">
             <div className="breakdown-bar-fill" style={{ width: `${Math.min(value * 100, 100)}%` }} />
@@ -97,8 +95,9 @@ const CandidatePanel = ({ candidate, onRecalculate, onDelete }) => {
             }
             const resumeText = allSkills.join(" ") + " " + (parsed.designation || []).join(" ");
             const result = await scoreResume({
+                resume_id: resumeId,
                 resume_text: resumeText,
-                job_description: "DevOps Engineer AWS Kubernetes Docker Terraform CI/CD Jenkins Python Bash Grafana Prometheus"
+                job_description: "Cloud Engineer AWS Kubernetes Docker Terraform CI/CD Python DevOps" 
             });
             setScore(result);
             if (onRecalculate) onRecalculate(result);
@@ -107,69 +106,76 @@ const CandidatePanel = ({ candidate, onRecalculate, onDelete }) => {
         }
     };
 
-    const displayScore = score;
-
     return (
         <div className="candidate-panel">
-            {/* Left: PDF Viewer */}
-            <div className="pdf-viewer-wrapper card" style={{ padding: 0 }}>
+            {/* Left: PDF Viewer (Glass) */}
+            <div className="pdf-viewer-wrapper glass-card">
                 {fileUrl ? (
                     <iframe
                         src={fileUrl}
                         title="Resume Preview"
-                        style={{ width: "100%", minHeight: 620, border: "none" }}
+                        style={{ width: "100%", minHeight: 700, border: "none" }}
                     />
                 ) : (
-                    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: 620, color: "var(--text-muted)", flexDirection: "column", gap: "0.5rem" }}>
-                        <span style={{ fontSize: "3rem" }}>📄</span>
+                    <div className="pdf-placeholder">
+                        <span>📄</span>
                         <span>No PDF preview available</span>
-                        <small>Re-upload the resume to enable preview</small>
                     </div>
                 )}
             </div>
 
-            {/* Right: AI Breakdown */}
+            {/* Right: AI Analysis (Glass) */}
             <div className="analysis-panel">
-
-                {/* Score Ring */}
-                <div className="card">
-                    <div style={{ fontWeight: 700, marginBottom: "1rem", color: "var(--accent)", fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.08em" }}>ATS Score</div>
-                    {displayScore ? (
-                        <>
-                            <div className="score-ring-wrap">
-                                <ScoreRing value={displayScore.overall_score} />
-                                <div className="score-breakdown" style={{ flex: 1 }}>
-                                    <Bar label="Semantic Similarity" value={displayScore.semantic_similarity} />
-                                    <Bar label="Skill Match" value={displayScore.skill_match} />
-                                    <Bar label="Experience Alignment" value={displayScore.experience_alignment} />
-                                    <Bar label="Keyword Score" value={displayScore.keyword_score} />
-                                </div>
-                            </div>
-                            {displayScore.recommendation && (
-                                <p className="recommendation-box">{displayScore.recommendation}</p>
-                            )}
-                        </>
-                    ) : (
-                        <p style={{ color: "var(--text-muted)", fontSize: "0.9rem" }}>No score computed yet. Add a job description and recalculate.</p>
-                    )}
+                
+                {/* Score Section */}
+                <div className="glass-card analysis-grid">
+                    <div className="score-summary">
+                        <ScoreRing value={score?.overall_score || 0} />
+                        <div className="simple-breakdown">
+                            <Bar label="Semantic Match" value={score?.semantic_similarity || 0} />
+                            <Bar label="Experience" value={score?.experience_alignment || 0} />
+                        </div>
+                    </div>
+                    <div className="visual-gap">
+                        <SkillGapChart score={score} />
+                    </div>
                 </div>
 
-                {/* Editable Skills */}
-                <div className="card">
-                    <div style={{ fontWeight: 700, marginBottom: "0.75rem", color: "var(--text)", fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.08em" }}>
-                        Parsed Skills <span style={{ color: "var(--text-muted)", fontWeight: 400, textTransform: "none", fontSize: "0.75rem" }}>(click × to remove)</span>
+                {/* AI Expert Analysis Section (XAI) */}
+                {score && score.ai_feedback && (
+                    <div className="glass-card ai-insights">
+                        <div className="section-title ai-gradient-text">✨ AI Expert Analysis</div>
+                        <p className="ai-reasoning">{score.ai_feedback}</p>
+                        
+                        <div className="insights-grid">
+                            <div className="insight-col">
+                                <div className="insight-label strengths">Key Strengths</div>
+                                <ul className="insight-list">
+                                    {(score.strengths || []).map((s, i) => (
+                                        <li key={i} className="strength-item">✓ {s}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                            <div className="insight-col">
+                                <div className="insight-label improvements">Gaps to Address</div>
+                                <ul className="insight-list">
+                                    {(score.improvements || []).map((s, i) => (
+                                        <li key={i} className="improvement-item">⚠ {s}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </div>
                     </div>
+                )}
+
+                {/* Skills Editor */}
+                <div className="glass-card">
+                    <div className="section-title">Parsed Skills</div>
                     <div className="skills-grid">
-                        {existingSkills.map((s) => (
-                            <span key={s} className="skill-tag matched">
+                        {allSkills.map((s) => (
+                            <span key={s} className="skill-tag">
                                 {s}
-                                <button onClick={() => handleRemoveSkill(s, true)} aria-label={`Remove ${s}`}>×</button>
-                            </span>
-                        ))}
-                        {editedSkills.map((s) => (
-                            <span key={s} className="skill-tag custom">
-                                {s}
-                                <button onClick={() => handleRemoveSkill(s)} aria-label={`Remove ${s}`}>×</button>
+                                <button onClick={() => handleRemoveSkill(s, existingSkills.includes(s))}>×</button>
                             </span>
                         ))}
                     </div>
@@ -178,46 +184,23 @@ const CandidatePanel = ({ candidate, onRecalculate, onDelete }) => {
                             value={newSkill}
                             onChange={(e) => setNewSkill(e.target.value)}
                             onKeyDown={(e) => e.key === "Enter" && handleAddSkill()}
-                            placeholder="Add missing skill (e.g. AWS EC2)..."
+                            placeholder="Add skill..."
                         />
-                        <button className="btn-add" onClick={handleAddSkill}>Add</button>
+                        <button onClick={handleAddSkill}>Add</button>
                     </div>
-                    <button className="recalc-btn" onClick={handleRecalculate} disabled={loading}>
-                        {loading ? "Recalculating…" : "⚡ Recalculate ATS Score"}
+                    <button className="btn-primary recalc-btn" onClick={handleRecalculate} disabled={loading}>
+                        {loading ? "Analyzing..." : "⚡ Run AI Analysis"}
                     </button>
                 </div>
 
-                {/* Basic Info + Delete */}
-                <div className="card">
-                    <div style={{ fontWeight: 700, marginBottom: "0.75rem", color: "var(--purple)", fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.08em" }}>Candidate Info</div>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem", fontSize: "0.88rem" }}>
-                        {parsed.name && <div><span style={{ color: "var(--text-muted)" }}>Name: </span>{parsed.name}</div>}
-                        {parsed.email && <div><span style={{ color: "var(--text-muted)" }}>Email: </span>{parsed.email}</div>}
-                        {parsed.mobile_number && <div><span style={{ color: "var(--text-muted)" }}>Phone: </span>{parsed.mobile_number}</div>}
-                        {parsed.total_experience != null && <div><span style={{ color: "var(--text-muted)" }}>Experience: </span>{parsed.total_experience} yrs</div>}
-                        {parsed.degree?.length > 0 && <div><span style={{ color: "var(--text-muted)" }}>Degree: </span>{(parsed.degree || []).join(", ")}</div>}
+                {/* Meta Info */}
+                <div className="glass-card candidate-meta">
+                    <div className="meta-row">
+                        <span>Candidate:</span>
+                        <strong>{parsed.name || "Anonymous Candidate"}</strong>
                     </div>
-                    <button
-                        onClick={handleDelete}
-                        disabled={deleting}
-                        style={{
-                            marginTop: "1rem",
-                            width: "100%",
-                            padding: "0.6rem",
-                            borderRadius: "var(--radius)",
-                            border: "1px solid var(--red)",
-                            background: "rgba(248,113,113,0.08)",
-                            color: "var(--red)",
-                            cursor: "pointer",
-                            fontWeight: 700,
-                            fontSize: "0.85rem",
-                            fontFamily: "Inter, sans-serif",
-                            transition: "all 0.2s",
-                        }}
-                        onMouseOver={(e) => { e.currentTarget.style.background = "var(--red)"; e.currentTarget.style.color = "#000000"; }}
-                        onMouseOut={(e) => { e.currentTarget.style.background = "rgba(248,113,113,0.08)"; e.currentTarget.style.color = "var(--red)"; }}
-                    >
-                        {deleting ? "Deleting…" : "🗑 Delete Resume"}
+                    <button className="btn-danger" onClick={handleDelete} disabled={deleting}>
+                        {deleting ? "Deleting..." : "Delete Candidate Data"}
                     </button>
                 </div>
             </div>
