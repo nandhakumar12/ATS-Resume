@@ -169,7 +169,8 @@ jobs:
             --targets "Key=instanceids,Values=${{ secrets.EC2_INSTANCE_ID }}" \
             --parameters 'commands=[
               "cd /home/ubuntu/ATS-Resume",
-              "git pull origin main",
+              "git fetch origin",
+              "git reset --hard origin/main",
               "aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com",
               "export ECR_REGISTRY=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com",
               "docker compose pull",
