@@ -1,20 +1,27 @@
 import React, { useEffect, useState } from "react";
-import { fetchResumeHistory } from "../services/api";
+import { fetchResumeHistory, fetchJobs } from "../services/api";
 import CandidatePanel from "../components/CandidatePanel";
-import SkillGapChart from "../components/SkillGapChart";
 
 const Dashboard = ({ globalScore, setGlobalScore }) => {
   const [items, setItems] = useState([]);
   const [selected, setSelected] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [jobs, setJobs] = useState([]);
+  const [selectedJob, setSelectedJob] = useState(null);
 
   useEffect(() => {
     (async () => {
       try {
-        const data = await fetchResumeHistory();
-        setItems(data || []);
+        const [resumeData, jobData] = await Promise.all([
+          fetchResumeHistory(),
+          fetchJobs(),
+        ]);
+        setItems(resumeData || []);
+        const jobList = jobData || [];
+        setJobs(jobList);
+        if (jobList.length > 0) setSelectedJob(jobList[0]);
       } catch (err) {
-        console.error("Failed to load resume history", err);
+        console.error("Failed to load data", err);
       } finally {
         setLoading(false);
       }
@@ -40,8 +47,44 @@ const Dashboard = ({ globalScore, setGlobalScore }) => {
       </header>
 
       <div className="dashboard-layout">
-        {/* Left Sidebar: Candidate List */}
+        {/* Left Sidebar: Job Selector + Candidate List */}
         <div className="card resume-history">
+          {/* Job Selector */}
+          <div style={{ marginBottom: "1.2rem" }}>
+            <h2 style={{ marginBottom: "0.5rem" }}>Score Against Job</h2>
+            {jobs.length === 0 ? (
+              <p style={{ color: "var(--text-muted)", fontSize: "0.82rem" }}>No jobs found. Create one first.</p>
+            ) : (
+              <select
+                id="job-selector"
+                value={selectedJob?.id || ""}
+                onChange={(e) => {
+                  const job = jobs.find((j) => j.id === e.target.value);
+                  setSelectedJob(job || null);
+                }}
+                style={{
+                  width: "100%",
+                  padding: "0.5rem 0.75rem",
+                  borderRadius: "8px",
+                  background: "var(--surface)",
+                  color: "var(--text)",
+                  border: "1px solid var(--border)",
+                  fontSize: "0.85rem",
+                  cursor: "pointer",
+                }}
+              >
+                {jobs.map((j) => (
+                  <option key={j.id} value={j.id}>{j.title}</option>
+                ))}
+              </select>
+            )}
+            {selectedJob && (
+              <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "0.35rem", lineHeight: 1.4 }}>
+                {selectedJob.description?.slice(0, 80)}…
+              </div>
+            )}
+          </div>
+
           <h2>Candidates</h2>
           {loading && <p style={{ color: "var(--text-muted)", fontSize: "0.9rem" }}>Loading…</p>}
           {!loading && items.length === 0 && (
@@ -74,6 +117,7 @@ const Dashboard = ({ globalScore, setGlobalScore }) => {
               </div>
               <CandidatePanel
                 candidate={selected}
+                selectedJob={selectedJob}
                 onRecalculate={setGlobalScore}
                 onDelete={handleDelete}
               />

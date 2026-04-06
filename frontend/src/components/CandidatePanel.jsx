@@ -44,7 +44,7 @@ const Bar = ({ label, value = 0 }) => (
     </div>
 );
 
-const CandidatePanel = ({ candidate, onRecalculate, onDelete }) => {
+const CandidatePanel = ({ candidate, selectedJob, onRecalculate, onDelete }) => {
     const [editedSkills, setEditedSkills] = useState([]);
     const [removedParsedSkills, setRemovedParsedSkills] = useState([]);
     const [newSkill, setNewSkill] = useState("");
@@ -94,10 +94,13 @@ const CandidatePanel = ({ candidate, onRecalculate, onDelete }) => {
                 await updateResumeSkills(resumeId, allSkills);
             }
             const resumeText = allSkills.join(" ") + " " + (parsed.designation || []).join(" ");
+            const jobDesc = selectedJob?.description || "Software Engineer Python AWS Cloud";
+            const jobTitle = selectedJob?.title || "the role";
             const result = await scoreResume({
                 resume_id: resumeId,
                 resume_text: resumeText,
-                job_description: "Cloud Engineer AWS Kubernetes Docker Terraform CI/CD Python DevOps" 
+                job_description: jobDesc,
+                job_title: jobTitle,
             });
             setScore(result);
             if (onRecalculate) onRecalculate(result);
@@ -130,7 +133,12 @@ const CandidatePanel = ({ candidate, onRecalculate, onDelete }) => {
                 {/* Score Section */}
                 <div className="glass-card analysis-grid">
                     <div className="score-summary">
-                        <ScoreRing value={score?.overall_score || 0} />
+                        <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", justifyContent: "center" }}>
+                            <ScoreRing value={score?.overall_score || 0} label="ATS Score" />
+                            {score?.ai_score != null && (
+                                <ScoreRing value={score.ai_score} label="Gemini AI" />
+                            )}
+                        </div>
                         <div className="simple-breakdown">
                             <Bar label="Semantic Match" value={score?.semantic_similarity || 0} />
                             <Bar label="Experience" value={score?.experience_alignment || 0} />
