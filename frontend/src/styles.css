@@ -165,7 +165,7 @@ body {
 /* ── Analysis Grid (Chart + Ring) ── */
 .analysis-grid {
   display: grid;
-  grid-template-columns: 150px 1fr;
+  grid-template-columns: 320px 1fr;
   gap: 2rem;
   align-items: center;
 }
