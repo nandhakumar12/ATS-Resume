@@ -17,16 +17,16 @@ async def parse_resume_file(file: UploadFile) -> Dict[str, Any]:
         f.write(content)
         
     try:
-        from pyresparser import ResumeParser
-        data = ResumeParser(file_path).get_extracted_data()
-        
         # Extract the full raw text so Gemini AI can actually read the whole document
         # instead of just the poorly-parsed skills array from pyresparser
         try:
             raw = extract_text(file_path)
-            data['raw_text'] = raw
         except Exception:
-            data['raw_text'] = ""
+            raw = ""
+            
+        from pyresparser import ResumeParser
+        data = ResumeParser(file_path).get_extracted_data()
+        data['raw_text'] = raw
             
         data['file_url'] = f"/api/uploads/{unique_filename}"
         return data
