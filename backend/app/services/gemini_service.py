@@ -8,8 +8,7 @@ Includes automatic model discovery and retry logic for MSc stability.
 import os
 import time
 import logging
-from google import genai
-from google.genai import errors
+import google.generativeai as genai
 
 logger = logging.getLogger(__name__)
 
@@ -25,12 +24,11 @@ class GeminiService:
         if not api_key:
             raise ValueError("GEMINI_API_KEY environment variable is not set.")
         
-        self.client = genai.Client(api_key=api_key)
-        # Using stable/latest aliases from the verified models list
+        genai.configure(api_key=api_key)
+        
         self.models_to_try = [
-            "models/gemini-flash-latest",
-            "models/gemini-2.5-flash",
-            "models/gemini-2.0-flash"
+            "gemini-1.5-flash",
+            "gemini-1.5-pro",
         ]
         logger.info("GeminiService initialized.")
 
@@ -69,10 +67,8 @@ IMPROVEMENTS:
             for attempt in range(retries + 1):
                 try:
                     logger.info(f"Analyzing with {model_name} (Attempt {attempt+1})...")
-                    response = self.client.models.generate_content(
-                        model=model_name,
-                        contents=prompt
-                    )
+                    model = genai.GenerativeModel(model_name)
+                    response = model.generate_content(prompt)
                     
                     if response and response.text:
                         return self._parse_response(response.text)
