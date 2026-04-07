@@ -12,6 +12,7 @@ services:
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-}
       - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN:-}
       - AWS_REGION=${AWS_REGION:-us-east-1}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
       - DDB_USERS_TABLE=${DDB_USERS_TABLE:-ats_users}
       - DDB_RESUMES_TABLE=${DDB_RESUMES_TABLE:-ats_resumes}
       - DDB_JOBS_TABLE=${DDB_JOBS_TABLE:-ats_jobs}
