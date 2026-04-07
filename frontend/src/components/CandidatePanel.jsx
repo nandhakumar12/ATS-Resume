@@ -91,7 +91,7 @@ const CandidatePanel = ({ candidate, selectedJob, onRecalculate, onDelete }) => 
             if (resumeId) {
                 await updateResumeSkills(resumeId, allSkills);
             }
-            const resumeText = allSkills.join(" ") + " " + (parsed.designation || []).join(" ");
+            const resumeText = parsed.raw_text || (allSkills.join(" ") + " " + (parsed.designation || []).join(" "));
             const jobDesc = selectedJob?.description || "Software Engineer Python AWS Cloud";
             const jobTitle = selectedJob?.title || "the role";
             const result = await scoreResume({
