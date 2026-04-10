@@ -16,3 +16,5 @@ pdfminer.six==20221105
 pytest==8.3.2
 pytest-cov==5.0.0
 pytest-asyncio==0.23.8
+bandit==1.8.0
+pylint==3.3.3
