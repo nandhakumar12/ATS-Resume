@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { scoreResume, deleteResume, updateResumeSkills } from "../services/api";
 import SkillGapChart from "./SkillGapChart";
 

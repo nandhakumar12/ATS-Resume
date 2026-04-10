@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { scoreResume } from "../services/api";
 import ScoreCard from "../components/ScoreCard";
 import SkillGapChart from "../components/SkillGapChart";

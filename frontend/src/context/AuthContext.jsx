@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { signOut, getCurrentSession } from "../services/cognito";
 
 const AuthContext = createContext(null);
@@ -20,7 +20,7 @@ export function AuthProvider({ children }) {
             .finally(() => setLoading(false));
     }, []);
 
-    function login({ idToken, accessToken, email }) {
+    function login({ idToken, email }) {
         localStorage.setItem(TOKEN_KEY, idToken);
         setUser({ email, idToken });
     }
@@ -42,6 +42,7 @@ export function AuthProvider({ children }) {
     );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useAuth() {
     return useContext(AuthContext);
 }

@@ -1,4 +1,4 @@
-import React from "react";
+
 
 const ScoreCard = ({ score }) => {
   if (!score) {

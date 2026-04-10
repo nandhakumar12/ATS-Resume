@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 
 /**
@@ -36,7 +36,7 @@ const Callback = ({ setPage }) => {
                 setPage("login");
             }
         })();
-    }, []);
+    }, [setPage, setUser, storeTokens]);
 
     return (
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "60vh", flexDirection: "column", gap: "1rem" }}>

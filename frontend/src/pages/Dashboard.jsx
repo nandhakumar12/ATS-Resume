@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { fetchResumeHistory, fetchJobs, createJob } from "../services/api";
 import CandidatePanel from "../components/CandidatePanel";
 
-const Dashboard = ({ globalScore, setGlobalScore }) => {
+const Dashboard = ({ setGlobalScore }) => {
   const [items, setItems] = useState([]);
   const [selected, setSelected] = useState(null);
   const [loading, setLoading] = useState(true);
