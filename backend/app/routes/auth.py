@@ -77,7 +77,6 @@ async def cognito_callback(code: str):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=resp.json())
 
     tokens = resp.json()
-    return JSONResponse(content={"access_token": auth_res["AuthenticationResult"]["AccessToken"]})
     return {
         "access_token": tokens.get("access_token"),
         "id_token": tokens.get("id_token"),
