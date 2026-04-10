@@ -28,7 +28,7 @@ const SkillGapChart = ({ score }) => {
     <div className="chart-container" style={{ width: '100%', height: 300 }}>
       <ResponsiveContainer width="100%" height="100%">
         <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data}>
-          <PolarGrid stroke="rgba(255,255,255,0.1)" />
+          <PolarGrid stroke="rgba(0,0,0,0.1)" />
           <PolarAngleAxis 
             dataKey="subject" 
             tick={{ fill: 'var(--text-muted)', fontSize: 11 }} 
