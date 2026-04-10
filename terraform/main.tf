@@ -63,8 +63,35 @@ resource "aws_cloudfront_distribution" "cdn" {
   }
 }
 
-# --- 2. Backend (EC2 Instance) ---
-# Satisfies LO1: Core cloud services
+# --- 2. Backend (EC2 Instance & IAM) ---
+# Satisfies LO1: Core cloud services and LO3: IAM Security
+
+resource "aws_iam_role" "ec2_role" {
+  name = "ats-ec2-role-${var.student_id}"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "cloudwatch_logs" {
+  role       = aws_iam_role.ec2_role.name
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
+}
+
+resource "aws_iam_instance_profile" "ec2_profile" {
+  name = "ats-ec2-profile-${var.student_id}"
+  role = aws_iam_role.ec2_role.name
+}
 
 resource "aws_security_group" "backend_sg" {
   name        = "ats-backend-sg"
@@ -96,6 +123,8 @@ resource "aws_instance" "backend_server" {
   ami           = "ami-0c101f26f147fa7fd" # Amazon Linux 2023 - us-east-1
   instance_type = "t2.micro"
   key_name      = var.key_name
+
+  iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
 
   vpc_security_group_ids = [aws_security_group.backend_sg.id]
 

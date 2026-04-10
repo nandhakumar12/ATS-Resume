@@ -27,6 +27,12 @@ services:
     volumes:
       - ./backend/uploads:/app/uploads
     restart: unless-stopped
+    logging:
+      driver: awslogs
+      options:
+        awslogs-region: "${AWS_REGION:-us-east-1}"
+        awslogs-group: "/ats-resume/docker"
+        awslogs-stream: "backend"
 
   frontend:
     image: ${ECR_REGISTRY:-ats}-frontend:latest
@@ -47,6 +53,12 @@ services:
     networks:
       - ats-network
     restart: unless-stopped
+    logging:
+      driver: awslogs
+      options:
+        awslogs-region: "${AWS_REGION:-us-east-1}"
+        awslogs-group: "/ats-resume/docker"
+        awslogs-stream: "frontend"
 
   nginx:
     image: ${ECR_REGISTRY:-ats}-nginx:latest
@@ -62,6 +74,12 @@ services:
     networks:
       - ats-network
     restart: unless-stopped
+    logging:
+      driver: awslogs
+      options:
+        awslogs-region: "${AWS_REGION:-us-east-1}"
+        awslogs-group: "/ats-resume/docker"
+        awslogs-stream: "nginx"
 
 networks:
   ats-network:
