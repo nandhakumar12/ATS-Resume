@@ -16,10 +16,19 @@ const Dashboard = ({ setGlobalScore }) => {
   useEffect(() => {
     (async () => {
       try {
-        const [resumeData, jobData] = await Promise.all([
-          fetchResumeHistory(),
-          fetchJobs(),
-        ]);
+        let resumeData = [];
+        let jobData = [];
+        try {
+          resumeData = await fetchResumeHistory();
+        } catch (e) {
+          console.error("Resume fetch failed", e);
+        }
+        try {
+          jobData = await fetchJobs();
+        } catch (e) {
+          console.error("Job fetch failed", e);
+        }
+        
         setItems(resumeData || []);
         const jobList = jobData || [];
         setJobs(jobList);

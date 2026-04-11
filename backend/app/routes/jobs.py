@@ -25,7 +25,14 @@ async def create_job(
         "description": job_in.description,
         "created_by": str(current_user.id),
     }
-    table.put_item(Item=item)
+    try:
+        table.put_item(Item=item)
+    except Exception as e:
+        print(f"Create Job Error: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_MODEL,
+            detail=f"Failed to create job in database: {str(e)}"
+        )
     return JobResponse(
         id=job_id,
         title=job_in.title,
