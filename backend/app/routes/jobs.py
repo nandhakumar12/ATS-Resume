@@ -30,7 +30,7 @@ async def create_job(
     except Exception as e:
         print(f"Create Job Error: {str(e)}")
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_MODEL,
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to create job in database: {str(e)}"
         )
     return JobResponse(
