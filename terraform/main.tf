@@ -120,6 +120,22 @@ resource "aws_iam_role_policy_attachment" "cloudwatch_logs" {
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
 }
 
+resource "aws_iam_role_policy" "secrets_policy" {
+  name = "ats-secrets-policy-${var.student_id}"
+  role = aws_iam_role.ec2_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action   = "secretsmanager:GetSecretValue"
+        Effect   = "Allow"
+        Resource = aws_secretsmanager_secret.ats_secrets.arn
+      }
+    ]
+  })
+}
+
 resource "aws_iam_instance_profile" "ec2_profile" {
   name = "ats-ec2-profile-${var.student_id}"
   role = aws_iam_role.ec2_role.name
@@ -199,4 +215,29 @@ resource "aws_cognito_user_pool" "pool" {
 resource "aws_cognito_user_pool_client" "client" {
   name         = "ats-client"
   user_pool_id = aws_cognito_user_pool.pool.id
+}
+
+# --- 5. Secrets Manager (LO3: Security) ---
+
+resource "aws_secretsmanager_secret" "ats_secrets" {
+  name                    = "ats/backend/secrets-${var.student_id}"
+  recovery_window_in_days = 0 # Force delete for student lab cost saving
+}
+
+resource "aws_secretsmanager_secret_version" "ats_secrets_v1" {
+  secret_id     = aws_secretsmanager_secret.ats_secrets.id
+  secret_string = jsonencode({
+    GEMINI_API_KEY          = "${var.gemini_api_key}"
+    COGNITO_USER_POOL_ID    = aws_cognito_user_pool.pool.id
+    COGNITO_APP_CLIENT_ID   = aws_cognito_user_pool_client.client.id
+    COGNITO_REGION          = var.aws_region
+    DDB_RESUMES_TABLE       = aws_dynamodb_table.resumes_table.name
+  })
+}
+
+# --- 6. CloudWatch Logs (LO5: Observability) ---
+
+resource "aws_cloudwatch_log_group" "docker_logs" {
+  name              = "/ats-resume/docker"
+  retention_in_days = 7
 }
