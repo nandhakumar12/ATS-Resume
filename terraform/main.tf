@@ -241,3 +241,39 @@ resource "aws_cloudwatch_log_group" "docker_logs" {
   name              = "/ats-resume/docker"
   retention_in_days = 7
 }
+
+# --- 7. CloudWatch Operational Dashboard (CPP LO5: Observability) ---
+resource "aws_cloudwatch_dashboard" "main" {
+  dashboard_name = "ATS-Resume-Operational-Dashboard"
+
+  dashboard_body = jsonencode({
+    widgets = [
+      {
+        type   = "metric"
+        x      = 0
+        y      = 0
+        width  = 12
+        height = 6
+        properties = {
+          metrics = [
+            ["AWS/EC2", "CPUUtilization", "InstanceId", "${aws_instance.backend_server.id}"]
+          ]
+          period = 300
+          stat   = "Average"
+          region = "${var.aws_region}"
+          title  = "Backend CPU Utilization"
+        }
+      },
+      {
+        type   = "text"
+        x      = 12
+        y      = 0
+        width  = 12
+        height = 6
+        properties = {
+          markdown = "# ATS Resume Ops\nStatus: Online\nEnvironment: Production"
+        }
+      }
+    ]
+  })
+}

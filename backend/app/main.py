@@ -6,10 +6,29 @@ from fastapi.staticfiles import StaticFiles
 
 from app.routes import auth, resume, jobs
 
-os.makedirs("uploads", exist_ok=True)
+import logging
+import json
+from datetime import datetime
 
+os.makedirs("uploads", exist_ok=True)
 load_dotenv()
 
+# --- Professional JSON Logging (CPP LO5: Observability) ---
+class JSONFormatter(logging.Formatter):
+    def format(self, record):
+        log_entry = {
+            "timestamp": datetime.utcnow().isoformat(),
+            "level": record.levelname,
+            "name": record.name,
+            "message": record.getMessage(),
+        }
+        return json.dumps(log_entry)
+
+logger = logging.getLogger()
+handler = logging.StreamHandler()
+handler.setFormatter(JSONFormatter())
+logger.addHandler(handler)
+logger.setLevel(logging.INFO)
 
 def create_app() -> FastAPI:
     app = FastAPI(
@@ -17,6 +36,11 @@ def create_app() -> FastAPI:
         version="0.1.0",
         description="MSc-level AI-powered Applicant Tracking System (Architecture B).",
     )
+
+    # --- Platform Health Check (CPP LO1: Operational Excellence) ---
+    @app.get("/api/health")
+    def health_check():
+        return {"status": "healthy", "timestamp": datetime.utcnow().isoformat(), "service": "backend"}
 
     app.add_middleware(
         CORSMiddleware,
