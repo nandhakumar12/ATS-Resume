@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchResumeHistory, fetchJobs, createJob } from "../services/api";
+import { fetchResumeHistory, fetchJobs, createJob, checkHealth } from "../services/api";
 import CandidatePanel from "../components/CandidatePanel";
 
 const Dashboard = ({ setGlobalScore }) => {
@@ -11,6 +11,7 @@ const Dashboard = ({ setGlobalScore }) => {
   const [showJobModal, setShowJobModal] = useState(false);
   const [newJobTitle, setNewJobTitle] = useState("");
   const [newJobDesc, setNewJobDesc] = useState("");
+  const [isHealthy, setIsHealthy] = useState(true);
 
   useEffect(() => {
     (async () => {
@@ -29,6 +30,18 @@ const Dashboard = ({ setGlobalScore }) => {
         setLoading(false);
       }
     })();
+
+    // --- Health Check Polling (CPP LO5: Observability) ---
+    const healthInterval = setInterval(async () => {
+      try {
+        await checkHealth();
+        setIsHealthy(true);
+      } catch (err) {
+        setIsHealthy(false);
+      }
+    }, 30000);
+
+    return () => clearInterval(healthInterval);
   }, []);
 
   const handleSelect = (candidate) => {
@@ -58,11 +71,19 @@ const Dashboard = ({ setGlobalScore }) => {
 
   return (
     <div className="dashboard">
-      <header>
-        <h1>AI-Powered ATS Dashboard</h1>
-        <p style={{ color: "var(--text-muted)", marginTop: "0.3rem" }}>
-          Click any candidate to view their resume and AI analysis side-by-side
-        </p>
+      <header style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+        <div>
+          <h1>AI-Powered ATS Dashboard</h1>
+          <p style={{ color: "var(--text-muted)", marginTop: "0.3rem" }}>
+            Click any candidate to view their resume and AI analysis side-by-side
+          </p>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", background: "rgba(255,255,255,0.05)", padding: "0.5rem 0.8rem", borderRadius: "20px", border: "1px solid var(--glass-border)" }}>
+          <div style={{ width: "10px", height: "10px", borderRadius: "50%", background: isHealthy ? "#10b981" : "#ef4444", boxShadow: isHealthy ? "0 0 10px #10b981" : "0 0 10px #ef4444" }}></div>
+          <span style={{ fontSize: "0.8rem", fontWeight: 500, color: isHealthy ? "#d1fae5" : "#fee2e2" }}>
+            {isHealthy ? "Cloud System: Healthy" : "Cloud System: Error"}
+          </span>
+        </div>
       </header>
 
       <div className="dashboard-layout">

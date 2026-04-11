@@ -277,3 +277,20 @@ resource "aws_cloudwatch_dashboard" "main" {
     ]
   })
 }
+
+# --- 8. Proactive Monitoring (CPP LO5: Fault Tolerance) ---
+resource "aws_cloudwatch_metric_alarm" "cpu_alarm" {
+  alarm_name          = "ATS-Backend-High-CPU-Alarm"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = "2"
+  metric_name         = "CPUUtilization"
+  namespace           = "AWS/EC2"
+  period              = "120"
+  statistic           = "Average"
+  threshold           = "80"
+  alarm_description   = "This metric monitors ec2 cpu utilization"
+
+  dimensions = {
+    InstanceId = aws_instance.backend_server.id
+  }
+}

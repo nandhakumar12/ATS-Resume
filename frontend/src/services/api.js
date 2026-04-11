@@ -79,3 +79,7 @@ export async function updateJob(jobId, payload) {
 export async function deleteJob(jobId) {
   return request(`/jobs/${encodeURIComponent(jobId)}`, { method: "DELETE" });
 }
+
+export async function checkHealth() {
+  return request("/health");
+}
