@@ -3,6 +3,7 @@ from fastapi import UploadFile
 import os
 import time
 from pdfminer.high_level import extract_text
+from pyresparser import ResumeParser
 import os
 import time
 
@@ -24,7 +25,6 @@ async def parse_resume_file(file: UploadFile) -> Dict[str, Any]:
         except Exception:
             raw = ""
             
-        from pyresparser import ResumeParser
         data = ResumeParser(file_path).get_extracted_data()
         data['raw_text'] = raw
             

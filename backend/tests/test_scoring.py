@@ -21,7 +21,7 @@ def test_score_resume_against_job(MockGemini):
     # Assertions
     assert result.overall_score > 0
     assert result.ai_score == 85
-    assert "Python" in result.matched_skills
+    assert "python" in result.matched_skills
     assert "aws" in result.matched_skills
     assert "Python" in result.strengths
     assert "Containerization" in result.improvements
