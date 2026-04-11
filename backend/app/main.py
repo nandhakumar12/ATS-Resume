@@ -5,12 +5,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from app.routes import auth, resume, jobs
-from app.services.secrets_service import inject_secrets
 
 os.makedirs("uploads", exist_ok=True)
 
 load_dotenv()
-inject_secrets()
 
 
 def create_app() -> FastAPI:
