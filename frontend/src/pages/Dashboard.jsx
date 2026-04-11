@@ -188,14 +188,14 @@ const Dashboard = ({ setGlobalScore }) => {
             <form onSubmit={handleCreateJob} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
               <div>
                 <label style={{ display: "block", marginBottom: "0.5rem", fontSize: "0.85rem", color: "var(--text-muted)" }}>Job Title</label>
-                <input required value={newJobTitle} onChange={e => setNewJobTitle(e.target.value)} style={{ width: "100%", padding: "0.75rem", borderRadius: "8px", background: "rgba(255,255,255,0.05)", border: "1px solid var(--glass-border)", color: "#fff" }} />
+                <input required value={newJobTitle} onChange={e => setNewJobTitle(e.target.value)} style={{ width: "100%", padding: "0.75rem", borderRadius: "8px", background: "rgba(0,0,0,0.05)", border: "1px solid var(--border)", color: "var(--text)" }} />
               </div>
               <div>
                 <label style={{ display: "block", marginBottom: "0.5rem", fontSize: "0.85rem", color: "var(--text-muted)" }}>Job Description</label>
-                <textarea required value={newJobDesc} onChange={e => setNewJobDesc(e.target.value)} style={{ width: "100%", height: "120px", padding: "0.75rem", borderRadius: "8px", background: "rgba(255,255,255,0.05)", border: "1px solid var(--glass-border)", color: "#fff", resize: "vertical" }} />
+                <textarea required value={newJobDesc} onChange={e => setNewJobDesc(e.target.value)} style={{ width: "100%", height: "120px", padding: "0.75rem", borderRadius: "8px", background: "rgba(0,0,0,0.05)", border: "1px solid var(--border)", color: "var(--text)", resize: "vertical" }} />
               </div>
               <div style={{ display: "flex", gap: "1rem", marginTop: "1rem" }}>
-                <button type="button" onClick={() => setShowJobModal(false)} style={{ flex: 1, padding: "0.75rem", background: "rgba(255,255,255,0.1)", border: "none", color: "#fff", borderRadius: "8px", cursor: "pointer" }}>Cancel</button>
+                <button type="button" onClick={() => setShowJobModal(false)} style={{ flex: 1, padding: "0.75rem", background: "rgba(0,0,0,0.05)", border: "1px solid var(--border)", color: "var(--text)", borderRadius: "8px", cursor: "pointer", fontWeight: 600 }}>Cancel</button>
                 <button type="submit" className="btn-primary" style={{ flex: 1 }}>Save Job</button>
               </div>
             </form>
