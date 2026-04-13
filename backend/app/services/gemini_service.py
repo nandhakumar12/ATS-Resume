@@ -27,10 +27,11 @@ class GeminiService:
         genai.configure(api_key=api_key)
         
         self.models_to_try = [
-            "gemini-2.5-flash",
-            "gemini-2.0-flash",
+            "gemini-1.5-flash",
+            "gemini-1.5-pro",
+            "gemini-pro",
         ]
-        logger.info("GeminiService initialized.")
+        logger.info("GeminiService initialized with models: %s", self.models_to_try)
 
     def analyze_resume(
         self,
@@ -66,30 +67,37 @@ IMPROVEMENTS:
         for model_name in self.models_to_try:
             for attempt in range(retries + 1):
                 try:
-                    logger.info(f"Analyzing with {model_name} (Attempt {attempt+1})...")
+                    logger.info(f"Attempting analysis: model={model_name}, attempt={attempt+1}")
                     model = genai.GenerativeModel(model_name)
                     response = model.generate_content(prompt)
                     
                     if response and response.text:
+                        logger.info(f"Successfully received response from {model_name}")
                         return self._parse_response(response.text)
+                    else:
+                        logger.warning(f"Empty response from {model_name}")
                 
                 except Exception as e:
                     err_msg = str(e).lower()
                     if "429" in err_msg:
-                        # Rate limit: Wait and retry
                         wait_time = (attempt + 1) * 10
                         logger.warning(f"Rate limit (429) on {model_name}. Retrying in {wait_time}s...")
                         time.sleep(wait_time)
-                    elif "404" in err_msg or "not found" in err_msg:
-                        logger.warning(f"Model ID {model_name} not recognized. Trying next model...")
+                    elif "404" in err_msg or "not found" in err_msg or "unsupported" in err_msg:
+                        logger.warning(f"Model {model_name} unavailable or not found: {e}. Trying next model...")
                         break # Try next model
                     else:
-                        logger.error(f"Gemini API Exception ({model_name}): {e}")
+                        logger.error(f"Gemini API Error ({model_name}): {e}")
+                        # On other errors, try next attempt for same model or next model
+                        if attempt < retries:
+                            time.sleep(2)
+                            continue
                         break
 
+        logger.error("All Gemini models exhausted or failed.")
         return {
             "score": 0,
-            "reasoning": "AI analysis unavailable (Rate limit or model connection error).",
+            "reasoning": "AI analysis currently unavailable. The system will rely on local NLP scoring.",
             "strengths": [],
             "improvements": []
         }

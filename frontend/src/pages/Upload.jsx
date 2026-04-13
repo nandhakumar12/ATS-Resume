@@ -45,7 +45,7 @@ const Upload = ({ setGlobalScore, setPage }) => {
         }, 1500);
       }
     } catch (err) {
-      setStatus("Upload failed. Check console for details.");
+      setStatus(`Error: ${err.message || "Upload failed. Check console for details."}`);
       console.error(err);
     }
   };

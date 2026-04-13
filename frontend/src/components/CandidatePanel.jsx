@@ -49,6 +49,7 @@ const CandidatePanel = ({ candidate, selectedJob, onRecalculate, onDelete }) => 
     const [score, setScore] = useState(null);
     const [loading, setLoading] = useState(false);
     const [deleting, setDeleting] = useState(false);
+    const [apiError, setApiError] = useState(null);
 
     const parsed = candidate?.parsed_data || {};
     const resumeId = candidate?.id;
@@ -87,6 +88,7 @@ const CandidatePanel = ({ candidate, selectedJob, onRecalculate, onDelete }) => 
 
     const handleRecalculate = async () => {
         setLoading(true);
+        setApiError(null);
         try {
             if (resumeId) {
                 await updateResumeSkills(resumeId, allSkills);
@@ -102,6 +104,9 @@ const CandidatePanel = ({ candidate, selectedJob, onRecalculate, onDelete }) => 
             });
             setScore(result);
             if (onRecalculate) onRecalculate(result);
+        } catch (err) {
+            console.error("Analysis failed", err);
+            setApiError(err.message || "An unexpected error occurred during analysis.");
         } finally {
             setLoading(false);
         }
@@ -194,6 +199,11 @@ const CandidatePanel = ({ candidate, selectedJob, onRecalculate, onDelete }) => 
                         />
                         <button onClick={handleAddSkill}>Add</button>
                     </div>
+                    {apiError && (
+                        <div className="error-banner" style={{ marginTop: "1rem", padding: "0.75rem", background: "rgba(239, 68, 68, 0.1)", border: "1px solid var(--red)", borderRadius: "8px", color: "#fca5a5", fontSize: "0.85rem" }}>
+                            <strong>Analysis Error:</strong> {apiError}
+                        </div>
+                    )}
                     <button className="btn-primary recalc-btn" onClick={handleRecalculate} disabled={loading}>
                         {loading ? "Analyzing..." : "⚡ Run AI Analysis"}
                     </button>

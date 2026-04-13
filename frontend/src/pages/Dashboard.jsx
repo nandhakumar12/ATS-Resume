@@ -11,44 +11,47 @@ const Dashboard = ({ setGlobalScore }) => {
   const [showJobModal, setShowJobModal] = useState(false);
   const [newJobTitle, setNewJobTitle] = useState("");
   const [newJobDesc, setNewJobDesc] = useState("");
-  const [isHealthy, setIsHealthy] = useState(true);
+    const [isHealthy, setIsHealthy] = useState(true);
+    const [healthError, setHealthError] = useState(null);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        let resumeData = [];
-        let jobData = [];
-        try {
-          resumeData = await fetchResumeHistory();
-        } catch (e) {
-          console.error("Resume fetch failed", e);
-        }
-        try {
-          jobData = await fetchJobs();
-        } catch (e) {
-          console.error("Job fetch failed", e);
-        }
-        
-        setItems(resumeData || []);
-        const jobList = jobData || [];
-        setJobs(jobList);
-        if (jobList.length > 0) setSelectedJob(jobList[0]);
-      } catch (err) {
-        console.error("Failed to load data", err);
-      } finally {
-        setLoading(false);
-      }
-    })();
+    useEffect(() => {
+        (async () => {
+            try {
+                let resumeData = [];
+                let jobData = [];
+                try {
+                    resumeData = await fetchResumeHistory();
+                } catch (e) {
+                    console.error("Resume fetch failed", e);
+                }
+                try {
+                    jobData = await fetchJobs();
+                } catch (e) {
+                    console.error("Job fetch failed", e);
+                }
+                
+                setItems(resumeData || []);
+                const jobList = jobData || [];
+                setJobs(jobList);
+                if (jobList.length > 0) setSelectedJob(jobList[0]);
+            } catch (err) {
+                console.error("Failed to load data", err);
+            } finally {
+                setLoading(false);
+            }
+        })();
 
-    // --- Health Check Polling ---
-    const healthInterval = setInterval(async () => {
-      try {
-        await checkHealth();
-        setIsHealthy(true);
-      } catch (err) {
-        setIsHealthy(false);
-      }
-    }, 30000);
+        // --- Health Check Polling ---
+        const healthInterval = setInterval(async () => {
+            try {
+                await checkHealth();
+                setIsHealthy(true);
+                setHealthError(null);
+            } catch (err) {
+                setIsHealthy(false);
+                setHealthError(err.message);
+            }
+        }, 15000); // More frequent during debug
 
     return () => clearInterval(healthInterval);
   }, []);
@@ -87,7 +90,10 @@ const Dashboard = ({ setGlobalScore }) => {
             Click any candidate to view their resume and AI analysis side-by-side
           </p>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", background: "rgba(255,255,255,0.05)", padding: "0.5rem 0.8rem", borderRadius: "20px", border: "1px solid var(--glass-border)" }}>
+        <div 
+          style={{ display: "flex", alignItems: "center", gap: "0.6rem", background: "rgba(255,255,255,0.05)", padding: "0.5rem 0.8rem", borderRadius: "20px", border: "1px solid var(--glass-border)", cursor: healthError ? "help" : "default" }}
+          title={healthError || (isHealthy ? "All systems operational" : "Connection error")}
+        >
           <div style={{ width: "10px", height: "10px", borderRadius: "50%", background: isHealthy ? "#10b981" : "#ef4444", boxShadow: isHealthy ? "0 0 10px #10b981" : "0 0 10px #ef4444" }}></div>
           <span style={{ fontSize: "0.8rem", fontWeight: 500, color: isHealthy ? "#d1fae5" : "#fee2e2" }}>
             {isHealthy ? "Cloud System: Healthy" : "Cloud System: Error"}

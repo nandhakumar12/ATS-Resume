@@ -20,8 +20,17 @@ async function request(path, options = {}) {
   });
   if (res.status === 204) return null;
   if (!res.ok) {
-    const err = await res.json().catch(() => ({ detail: res.statusText }));
-    throw new Error(err.detail || `API error: ${res.status}`);
+    let detail = `API error: ${res.status}`;
+    try {
+      const err = await res.json();
+      detail = err.detail || detail;
+    } catch (e) {
+      // Fallback for non-JSON errors (like 502 Proxy error)
+      if (res.status === 502) detail = "Server is currently unavailable (502 Gateway Error). Please check if the backend is running.";
+      if (res.status === 504) detail = "Server timed out (504 Gateway Timeout).";
+      if (res.status === 401) detail = "Session expired. Please sign in again.";
+    }
+    throw new Error(detail);
   }
   return res.json();
 }
