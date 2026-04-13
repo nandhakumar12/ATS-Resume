@@ -27,8 +27,8 @@ class GeminiService:
         genai.configure(api_key=api_key)
         
         self.models_to_try = [
-            "gemini-1.5-flash",
-            "gemini-1.5-pro",
+            "gemini-2.5-flash",
+            "gemini-2.0-flash",
         ]
         logger.info("GeminiService initialized.")
 
