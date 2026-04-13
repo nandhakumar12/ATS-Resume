@@ -21,11 +21,13 @@ class GeminiService:
 
     def __init__(self):
         genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-        # Updated model identifiers with 'models/' prefix
+        # Updated model identifiers based on successful discovery
         self.models_to_try = [
+            "models/gemini-2.5-flash",
+            "models/gemini-2.0-flash",
             "models/gemini-1.5-flash",
+            "models/gemini-flash-latest",
             "models/gemini-1.5-pro",
-            "models/gemini-1.0-pro",
             "models/gemini-pro",
         ]
         logger.info("GeminiService initialized. Default models: %s", self.models_to_try)
