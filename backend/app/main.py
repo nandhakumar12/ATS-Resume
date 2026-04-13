@@ -5,13 +5,19 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from app.routes import auth, resume, jobs
+from app.services.secrets_service import inject_secrets
 
 import logging
 import json
 from datetime import datetime
 
 os.makedirs("uploads", exist_ok=True)
-load_dotenv()
+load_dotenv()  # Local .env takes precedence in dev — secrets won't overwrite
+
+# --- Inject AWS Secrets Manager secrets into environment at startup ---
+# On EC2: uses LabInstanceProfile IAM role (no hardcoded credentials needed)
+# Locally: AWS_SECRET_NAME not set → skipped, uses .env values instead
+inject_secrets()
 
 # --- Professional JSON Logging ---
 class JSONFormatter(logging.Formatter):

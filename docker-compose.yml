@@ -8,21 +8,12 @@ services:
     ports:
       - "8000:8000"
     environment:
-      # NOTE: AWS credentials are NOT injected here intentionally.
-      # The EC2 instance has LabInstanceProfile (IAM Role) attached.
-      # boto3 automatically uses EC2 instance metadata credentials.
-      # Injecting session tokens causes 500 errors when they expire (~4hrs).
+      # Only 2 env vars needed — everything else is loaded from AWS Secrets Manager at startup.
+      # inject_secrets() in main.py fetches the secret using the EC2 LabInstanceProfile IAM role.
+      # Secret name: ats/backend/secrets-25126067
       - AWS_REGION=${AWS_REGION:-us-east-1}
-      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
-      - DDB_USERS_TABLE=${DDB_USERS_TABLE:-ats_users}
-      - DDB_RESUMES_TABLE=${DDB_RESUMES_TABLE:-ats_resumes}
-      - DDB_JOBS_TABLE=${DDB_JOBS_TABLE:-ats_jobs}
-      - COGNITO_REGION=${COGNITO_REGION:-us-east-1}
-      - COGNITO_USER_POOL_ID=${COGNITO_USER_POOL_ID:-us-east-1_5rSehoZbr}
-      - COGNITO_APP_CLIENT_ID=${COGNITO_APP_CLIENT_ID:-4td5k9rcuoph3fs5q67gjji93p}
-      - COGNITO_DOMAIN=${COGNITO_DOMAIN:-}
-      - COGNITO_REDIRECT_URI=${COGNITO_REDIRECT_URI:-}
-      - COGNITO_LOGOUT_URI=${COGNITO_LOGOUT_URI:-}
+      - AWS_SECRET_NAME=ats/backend/secrets-25126067
+
     networks:
       - ats-network
     volumes:
