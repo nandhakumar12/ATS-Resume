@@ -12,37 +12,39 @@ aws secretsmanager describe-secret --secret-id "$SECRET_NAME" --region "$REGION"
   || echo "Secret MISSING - will create it"
 
 echo ""
+# Load .env variables
+if [ -f .env ]; then
+  export $(grep -v '^#' .env | xargs)
+else
+  echo ".env file missing!"
+  exit 1
+fi
+
+PAYLOAD=$(cat <<EOF
+{
+  "GEMINI_API_KEY": "${GEMINI_API_KEY}",
+  "COGNITO_USER_POOL_ID": "${COGNITO_USER_POOL_ID}",
+  "COGNITO_APP_CLIENT_ID": "${COGNITO_APP_CLIENT_ID}",
+  "COGNITO_REGION": "${COGNITO_REGION}",
+  "COGNITO_DOMAIN": "${COGNITO_DOMAIN}",
+  "COGNITO_REDIRECT_URI": "${COGNITO_REDIRECT_URI}",
+  "COGNITO_LOGOUT_URI": "${COGNITO_LOGOUT_URI}",
+  "DDB_RESUMES_TABLE": "ats_resumes",
+  "DDB_JOBS_TABLE": "ats_jobs",
+  "DDB_USERS_TABLE": "ats_users"
+}
+EOF
+)
+
 echo "=== Recreating/updating secret with current config ==="
 aws secretsmanager create-secret \
   --name "$SECRET_NAME" \
   --region "$REGION" \
-  --secret-string '{
-    "GEMINI_API_KEY": "AIzaSyCvfG-gEsBjeam054I9B5Gk3h8xjWX8jng",
-    "COGNITO_USER_POOL_ID": "us-east-1_5rSehoZbr",
-    "COGNITO_APP_CLIENT_ID": "4td5k9rcuoph3fs5q67gjji93p",
-    "COGNITO_REGION": "us-east-1",
-    "COGNITO_DOMAIN": "https://us-east-15rsehozbr.auth.us-east-1.amazoncognito.com",
-    "COGNITO_REDIRECT_URI": "https://nandhakumar.works/api/auth/callback",
-    "COGNITO_LOGOUT_URI": "https://nandhakumar.works",
-    "DDB_RESUMES_TABLE": "ats_resumes",
-    "DDB_JOBS_TABLE": "ats_jobs",
-    "DDB_USERS_TABLE": "ats_users"
-  }' 2>/dev/null || \
+  --secret-string "$PAYLOAD" 2>/dev/null || \
 aws secretsmanager put-secret-value \
   --secret-id "$SECRET_NAME" \
   --region "$REGION" \
-  --secret-string '{
-    "GEMINI_API_KEY": "AIzaSyCvfG-gEsBjeam054I9B5Gk3h8xjWX8jng",
-    "COGNITO_USER_POOL_ID": "us-east-1_5rSehoZbr",
-    "COGNITO_APP_CLIENT_ID": "4td5k9rcuoph3fs5q67gjji93p",
-    "COGNITO_REGION": "us-east-1",
-    "COGNITO_DOMAIN": "https://us-east-15rsehozbr.auth.us-east-1.amazoncognito.com",
-    "COGNITO_REDIRECT_URI": "https://nandhakumar.works/api/auth/callback",
-    "COGNITO_LOGOUT_URI": "https://nandhakumar.works",
-    "DDB_RESUMES_TABLE": "ats_resumes",
-    "DDB_JOBS_TABLE": "ats_jobs",
-    "DDB_USERS_TABLE": "ats_users"
-  }'
+  --secret-string "$PAYLOAD"
 
 echo "Secret created/updated successfully"
 
