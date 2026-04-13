@@ -29,6 +29,7 @@ class GeminiService:
         self.models_to_try = [
             "gemini-1.5-flash",
             "gemini-1.5-pro",
+            "gemini-1.0-pro",
             "gemini-pro",
         ]
         logger.info("GeminiService initialized with models: %s", self.models_to_try)
@@ -45,8 +46,8 @@ class GeminiService:
         """
 
         prompt = f"""
-You are an expert Applicant Tracking System (ATS). 
-Analyze the following anonymised resume against the job description for the role of '{job_title}'.
+You are an expert Applicant Tracking System (ATS) specializing in professional recruitment. 
+Analyze the provided anonymised resume against the job description for the role of '{job_title}'.
 The resume has been anonymised for privacy and bias mitigation.
 
 --- JOB DESCRIPTION ---
@@ -56,67 +57,82 @@ The resume has been anonymised for privacy and bias mitigation.
 {resume_text}
 
 --- REQUIRED RESPONSE FORMAT ---
-SCORE: [0-100]
-REASONING: [1-2 sentences]
+You MUST provide your response in the exact format below:
+SCORE: [An integer between 0 and 100]
+REASONING: [1-2 sentences explaining the score]
 STRENGTHS:
 - [Matching Skill/Experience 1]
 IMPROVEMENTS:
 - [Missing Skill/Experience 1]
+
+Ensure the STRENGTHS and IMPROVEMENTS sections use bullet points starting with "- ".
 """
 
         for model_name in self.models_to_try:
             for attempt in range(retries + 1):
                 try:
-                    logger.info(f"Attempting analysis: model={model_name}, attempt={attempt+1}")
+                    logger.info(f"Attempting Gemini AI Analysis: model={model_name}, attempt={attempt+1}")
                     model = genai.GenerativeModel(model_name)
                     response = model.generate_content(prompt)
                     
                     if response and response.text:
-                        logger.info(f"Successfully received response from {model_name}")
+                        logger.info(f"Received valid response from {model_name}")
                         return self._parse_response(response.text)
                     else:
-                        logger.warning(f"Empty response from {model_name}")
+                        logger.warning(f"Empty text response from {model_name}")
                 
                 except Exception as e:
                     err_msg = str(e).lower()
                     if "429" in err_msg:
-                        wait_time = (attempt + 1) * 10
+                        wait_time = (attempt + 1) * 12
                         logger.warning(f"Rate limit (429) on {model_name}. Retrying in {wait_time}s...")
                         time.sleep(wait_time)
                     elif "404" in err_msg or "not found" in err_msg or "unsupported" in err_msg:
-                        logger.warning(f"Model {model_name} unavailable or not found: {e}. Trying next model...")
-                        break # Try next model
+                        logger.warning(f"Model {model_name} unavailable: {e}. Trying different model...")
+                        break
                     else:
                         logger.error(f"Gemini API Error ({model_name}): {e}")
-                        # On other errors, try next attempt for same model or next model
                         if attempt < retries:
                             time.sleep(2)
                             continue
                         break
 
-        logger.error("All Gemini models exhausted or failed.")
+        logger.error("All Gemini AI models failed or returned no results.")
         return {
             "score": 0,
-            "reasoning": "AI analysis currently unavailable. The system will rely on local NLP scoring.",
+            "reasoning": "AI analysis is currently unavailable (API Connection Error).",
             "strengths": [],
             "improvements": []
         }
 
     def _parse_response(self, text: str) -> dict:
-        """Parse Gemini response into a structured dictionary."""
+        """Parse Gemini response with robust regex parsing."""
+        import re
         res = {"score": 0, "reasoning": "No reasoning provided.", "strengths": [], "improvements": []}
-        lines = [l.strip() for l in text.split("\n") if l.strip()]
         
+        # Robust Score extraction (handles formatting like **SCORE**: 85 or SCORE: 85/100)
+        score_match = re.search(r"SCORE:\s*(\d+)", text, re.IGNORECASE)
+        if score_match:
+            try: res["score"] = int(score_match.group(1))
+            except: pass
+            
+        # Reasoning extraction
+        reason_match = re.search(r"REASONING:\s*(.*)", text, re.IGNORECASE)
+        if reason_match:
+            res["reasoning"] = reason_match.group(1).strip()
+            
+        # Section-based parsing for lists
+        lines = [l.strip() for l in text.split("\n") if l.strip()]
         section = None
         for l in lines:
-            if l.startswith("SCORE:"):
-                try: res["score"] = int(l.split(":")[1].strip().split("/")[0])
-                except: pass
-            elif l.startswith("REASONING:"):
-                res["reasoning"] = l.split(":")[1].strip()
-                section = "reasoning"
-            elif l.startswith("STRENGTHS:"): section = "strengths"
-            elif l.startswith("IMPROVEMENTS:"): section = "improvements"
-            elif l.startswith("- ") and section in ("strengths", "improvements"):
-                res[section].append(l[2:].strip())
+            if "STRENGTHS:" in l.upper(): 
+                section = "strengths"
+                continue
+            if "IMPROVEMENTS:" in l.upper():
+                section = "improvements"
+                continue
+            
+            if section and l.startswith("-"):
+                res[section].append(l[1:].strip())
+        
         return res
