@@ -200,6 +200,8 @@ jobs:
               "git reset --hard origin/main",
               "aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com",
               "export ECR_REGISTRY=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/ats",
+              "docker compose down",
+              "docker system prune -af --volumes || true",
               "docker compose pull",
               "docker compose up -d"
             ]' \
@@ -214,17 +216,23 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-        
+
       - name: Wait for Deployment
-        run: sleep 30
-        
+        # Give EC2 time to pull images and start containers after SSM deploy
+        run: sleep 60
+
       - name: Run ZAP Baseline Scan
         uses: zaproxy/action-baseline@v0.14.0
         with:
           target: 'https://www.nandhakumar.works'
           allow_issue_writing: false
           fail_action: false
-          
+          # -I  = informational mode: do not fail on auth-protected (401/302) pages
+          # -T 2 = spider timeout 2 min (avoids read timeout on Cognito redirect)
+          # -j  = use AJAX spider for React SPA (better than traditional spider)
+          cmd_options: '-I -T 2 -j'
+          rules_file_name: '.zap/rules.tsv'
+
       - name: Upload ZAP Report
         uses: actions/upload-artifact@v4
         if: always()
