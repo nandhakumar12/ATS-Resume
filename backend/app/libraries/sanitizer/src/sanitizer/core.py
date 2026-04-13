@@ -5,8 +5,6 @@ class ResumeSanitizer:
     """
     CloudResumeSanitizer: A professional OOP library for PII (Personally Identifiable Information) 
     redaction in recruitment documents.
-    
-    This library satisfies the LO3 requirement of the Cloud Platform Programming module (NCI).
     """
 
     def __init__(self, mask_char: str = "[REDACTED]"):
@@ -39,7 +37,7 @@ class ResumeSanitizer:
 
     def get_summary(self, original_text: str, sanitized_text: str) -> dict:
         """
-        Returns a summary of the redaction process (for the MSc report).
+        Returns a summary of the redaction process.
         """
         return {
             "original_length": len(original_text),

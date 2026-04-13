@@ -3,7 +3,6 @@
 # A professional OOP library for PII (Personally Identifiable Information)
 # redaction in cloud-native recruitment systems.
 #
-# Developed as part of the MSc Cloud Platform Programming module at NCI.
 # Research motivation: Brookings Institution (2024) & MIT Sloan (Li et al., 2023)
 # on Algorithmic Bias in Automated Hiring.
 

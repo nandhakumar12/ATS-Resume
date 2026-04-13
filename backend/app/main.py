@@ -13,7 +13,7 @@ from datetime import datetime
 os.makedirs("uploads", exist_ok=True)
 load_dotenv()
 
-# --- Professional JSON Logging (CPP LO5: Observability) ---
+# --- Professional JSON Logging ---
 class JSONFormatter(logging.Formatter):
     def format(self, record):
         log_entry = {
@@ -34,10 +34,10 @@ def create_app() -> FastAPI:
     app = FastAPI(
         title="AI-Powered ATS Platform",
         version="0.1.0",
-        description="MSc-level AI-powered Applicant Tracking System (Architecture B).",
+        description="AI-powered Applicant Tracking System backend service.",
     )
 
-    # --- Platform Health Check (CPP LO1: Operational Excellence) ---
+    # --- Platform Health Check ---
     @app.get("/api/health")
     def health_check():
         return {"status": "healthy", "timestamp": datetime.utcnow().isoformat(), "service": "backend"}

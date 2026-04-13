@@ -8,9 +8,10 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-}
-      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-}
-      - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN:-}
+      # NOTE: AWS credentials are NOT injected here intentionally.
+      # The EC2 instance has LabInstanceProfile (IAM Role) attached.
+      # boto3 automatically uses EC2 instance metadata credentials.
+      # Injecting session tokens causes 500 errors when they expire (~4hrs).
       - AWS_REGION=${AWS_REGION:-us-east-1}
       - GEMINI_API_KEY=${GEMINI_API_KEY:-}
       - DDB_USERS_TABLE=${DDB_USERS_TABLE:-ats_users}

@@ -56,7 +56,7 @@ We are looking for a Cloud Engineer with:
 
 def main():
     print("\n" + "=" * 50)
-    print("Step 1: Running CloudResumeSanitizer (LO3: New Library)...")
+    print("Step 1: Running CloudResumeSanitizer...")
     sanitizer = ResumeSanitizer()
     sanitized = sanitizer.sanitize_text(SAMPLE_RESUME)
     
@@ -66,7 +66,7 @@ def main():
         print("❌ Sanitization Failed.")
 
     print("\n" + "=" * 50)
-    print("Step 2: Running Gemini AI Analysis (Explainable AI)...")
+    print("Step 2: Running Gemini AI Analysis...")
     print("(Waiting 3 seconds to avoid rate limiting...)")
     time.sleep(3)
     

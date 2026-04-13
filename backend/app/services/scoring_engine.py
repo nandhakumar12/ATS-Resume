@@ -5,7 +5,7 @@ import logging
 from app.models.resume import ResumeScore
 from app.services.similarity_engine import analyze_skill_gap, compute_semantic_similarity
 
-# Import your custom-built CloudResumeSanitizer library (LO3: New Code Library)
+# Import the custom CloudResumeSanitizer library
 sys.path.insert(0, os.path.abspath(
     os.path.join(os.path.dirname(__file__), '../../libraries/sanitizer/src')
 ))

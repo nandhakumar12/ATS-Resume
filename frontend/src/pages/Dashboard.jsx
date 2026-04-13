@@ -40,7 +40,7 @@ const Dashboard = ({ setGlobalScore }) => {
       }
     })();
 
-    // --- Health Check Polling (CPP LO5: Observability) ---
+    // --- Health Check Polling ---
     const healthInterval = setInterval(async () => {
       try {
         await checkHealth();

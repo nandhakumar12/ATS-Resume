@@ -1,24 +1,28 @@
-output "frontend_url" {
-  description = "The URL of the static frontend website."
-  value       = aws_s3_bucket_website_configuration.frontend_config.website_endpoint
+output "alb_dns_name" {
+  description = "The DNS name of the load balancer."
+  value       = aws_lb.ats_alb.dns_name
 }
 
-output "cloudfront_url" {
-  description = "The CloudFront CDN URL for global delivery."
-  value       = "https://${aws_cloudfront_distribution.cdn.domain_name}"
-}
-
-output "backend_public_ip" {
-  description = "The public IP address of the EC2 backend server."
+output "ec2_public_ip" {
+  description = "The public IP of the backend server."
   value       = aws_instance.backend_server.public_ip
-}
-
-output "dynamodb_table_name" {
-  description = "The name of the DynamoDB table."
-  value       = aws_dynamodb_table.resumes_table.name
 }
 
 output "cognito_user_pool_id" {
   description = "The ID of the Cognito User Pool."
-  value       = aws_cognito_user_pool.pool.id
+  value       = data.aws_cognito_user_pool.selected.id
+}
+
+output "cognito_app_client_id" {
+  description = "The ID of the Cognito App Client."
+  value       = data.aws_cognito_user_pool_client.selected.id
+}
+
+output "dynamodb_tables" {
+  description = "The names of the DynamoDB tables."
+  value = {
+    resumes = aws_dynamodb_table.resumes_table.name
+    jobs    = aws_dynamodb_table.jobs_table.name
+    users   = aws_dynamodb_table.users_table.name
+  }
 }

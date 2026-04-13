@@ -7,7 +7,7 @@ variable "aws_region" {
 variable "student_id" {
   description = "Your student ID to keep S3 buckets unique."
   type        = string
-  default     = ""
+  default     = "25126067"
 }
 
 variable "key_name" {
@@ -19,4 +19,20 @@ variable "gemini_api_key" {
   description = "The API key for Google Gemini AI."
   type        = string
   sensitive   = true
+}
+
+variable "domain_name" {
+  description = "The custom domain for the platform."
+  type        = string
+  default     = "nandhakumar.works"
+}
+
+variable "vpc_id" {
+  description = "The VPC ID from your AWS account."
+  type        = string
+}
+
+variable "public_subnet_ids" {
+  description = "List of existing public subnet IDs."
+  type        = list(string)
 }

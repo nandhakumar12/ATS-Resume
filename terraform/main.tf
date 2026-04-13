@@ -1,7 +1,4 @@
-# Terraform Infrastructure for AI ATS Resume (MSc Project)
-# =========================================================
-# This architecture implements a professional, cloud-native
-# environment satisfying LO1, LO4, and LO5 of the NCI module.
+# Terraform Infrastructure for AI ATS Resume
 
 terraform {
   required_providers {
@@ -16,147 +13,146 @@ provider "aws" {
   region = var.aws_region
 }
 
-# --- 1. Frontend (S3 + CloudFront CDN) ---
-# Satisfies LO4: Architectural patterns
-
-resource "aws_s3_bucket" "frontend_bucket" {
-  bucket        = "ats-resume-frontend-${var.student_id}"
-  force_destroy = true
+# --- 1. Edge Security (Existing ACM Certificate) ---
+# Fetching the existing validated certificate for the custom domain
+data "aws_acm_certificate" "issued" {
+  domain   = var.domain_name
+  statuses = ["ISSUED"]
 }
 
-resource "aws_s3_bucket_website_configuration" "frontend_config" {
-  bucket = aws_s3_bucket.frontend_bucket.id
-  index_document { suffix = "index.html" }
-}
+# --- 2. Load Balancing (ALB) ---
 
-resource "aws_cloudfront_origin_access_control" "oac" {
-  name                              = "ats-resume-oac-${var.student_id}"
-  description                       = "OAC for ATS Resume Frontend"
-  origin_access_control_origin_type = "s3"
-  signing_behavior                  = "always"
-  signing_protocol                  = "sigv4"
-}
+resource "aws_lb" "ats_alb" {
+  name               = "EbookALB"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.alb_sg.id]
+  subnets            = var.public_subnet_ids
 
-resource "aws_cloudfront_distribution" "cdn" {
-  origin {
-    domain_name              = aws_s3_bucket.frontend_bucket.bucket_regional_domain_name
-    origin_id                = "S3-Frontend"
-    origin_access_control_id = aws_cloudfront_origin_access_control.oac.id
+  enable_deletion_protection = false
+
+  tags = {
+    Name = "EbookALB"
   }
+}
 
-  enabled             = true
-  is_ipv6_enabled     = true
-  default_root_object = "index.html"
+resource "aws_lb_target_group" "frontend_tg" {
+  name     = "EbookFrontend-TG"
+  port     = 80
+  protocol = "HTTP"
+  vpc_id   = var.vpc_id
+  target_type = "instance"
 
-  default_cache_behavior {
-    allowed_methods  = ["GET", "HEAD"]
-    cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "S3-Frontend"
+  health_check {
+    path                = "/"
+    interval            = 30
+    timeout             = 5
+    healthy_threshold   = 5
+    unhealthy_threshold = 2
+    matcher             = "200"
+  }
+}
 
-    forwarded_values {
-      query_string = false
-      cookies { forward = "none" }
+resource "aws_lb_listener" "http" {
+  load_balancer_arn = aws_lb.ats_alb.arn
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {
+    type = "redirect"
+
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
     }
-
-    viewer_protocol_policy = "redirect-to-https"
-  }
-
-  restrictions {
-    geo_restriction {
-      restriction_type = "none"
-    }
-  }
-
-  viewer_certificate {
-    cloudfront_default_certificate = true
   }
 }
 
-resource "aws_s3_bucket_policy" "frontend_bucket_policy" {
-  bucket = aws_s3_bucket.frontend_bucket.id
+resource "aws_lb_listener" "https" {
+  load_balancer_arn = aws_lb.ats_alb.arn
+  port              = "443"
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = data.aws_acm_certificate.issued.arn
 
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action   = "s3:GetObject"
-        Effect   = "Allow"
-        Resource = "${aws_s3_bucket.frontend_bucket.arn}/*"
-        Principal = {
-          Service = "cloudfront.amazonaws.com"
-        }
-        Condition = {
-          StringEquals = {
-            "AWS:SourceArn" = aws_cloudfront_distribution.cdn.arn
-          }
-        }
-      }
-    ]
-  })
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.frontend_tg.arn
+  }
 }
 
-# --- 2. Backend (EC2 Instance & IAM) ---
-# Satisfies LO1: Core cloud services and LO3: IAM Security
-
-resource "aws_iam_role" "ec2_role" {
-  name = "ats-ec2-role-${var.student_id}"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
-        Principal = {
-          Service = "ec2.amazonaws.com"
-        }
-      }
-    ]
-  })
+resource "aws_lb_target_group_attachment" "nginx_attachment" {
+  target_group_arn = aws_lb_target_group.frontend_tg.arn
+  target_id        = aws_instance.backend_server.id
+  port             = 80
 }
 
-resource "aws_iam_role_policy_attachment" "cloudwatch_logs" {
-  role       = aws_iam_role.ec2_role.name
-  policy_arn = "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
-}
+# --- 2. Backend (EC2 Instance) ---
+# Note: Using pre-existing 'LabRole' and 'LabInstanceProfile' from AWS Academy Learner Lab.
 
-resource "aws_iam_role_policy" "secrets_policy" {
-  name = "ats-secrets-policy-${var.student_id}"
-  role = aws_iam_role.ec2_role.id
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action   = "secretsmanager:GetSecretValue"
-        Effect   = "Allow"
-        Resource = aws_secretsmanager_secret.ats_secrets.arn
-      }
-    ]
-  })
-}
-
-resource "aws_iam_instance_profile" "ec2_profile" {
-  name = "ats-ec2-profile-${var.student_id}"
-  role = aws_iam_role.ec2_role.name
-}
-
-resource "aws_security_group" "backend_sg" {
-  name        = "ats-backend-sg"
-  description = "Allow inbound traffic for API"
+resource "aws_security_group" "alb_sg" {
+  name        = "ats-alb-sg"
+  description = "Allow HTTPS and HTTP redirect for ALB"
+  vpc_id      = var.vpc_id
 
   ingress {
-    from_port   = 8000
-    to_port     = 8000
+    from_port   = 80
+    to_port     = 80
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group" "instance_sg" {
+  name        = "ats-backend-sg"
+  description = "Security group for internal backend services"
+  vpc_id      = var.vpc_id
+
+  # Inbound Rule: HTTP Traffic for Nginx Reverse Proxy
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  # Inbound Rule: Load Balancer specific traffic
+  ingress {
+    from_port       = 80
+    to_port         = 80
+    protocol        = "tcp"
+    security_groups = [aws_security_group.alb_sg.id]
+  }
+
+  # Inbound Rule: Application-layer API mapping
+  ingress {
+    from_port       = 3000
+    to_port         = 3006
+    protocol        = "tcp"
+    security_groups = [aws_security_group.alb_sg.id]
+  }
+
+  # Inbound Rule: Secure Shell (SSH) management access
+  ingress {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # Standard for students, usually restricted later
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
@@ -168,56 +164,80 @@ resource "aws_security_group" "backend_sg" {
 }
 
 resource "aws_instance" "backend_server" {
-  ami           = "ami-0c101f26f147fa7fd" # Amazon Linux 2023 - us-east-1
-  instance_type = "t2.micro"
+  ami           = "ami-0b6c6ebed2801a5cb" # Ubuntu 24.04 LTS
+  instance_type = "t3.micro"
   key_name      = var.key_name
 
-  iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
+  # Using standard LabInstanceProfile in AWS Academy
+  iam_instance_profile = "LabInstanceProfile"
 
-  vpc_security_group_ids = [aws_security_group.backend_sg.id]
+  vpc_security_group_ids = [aws_security_group.instance_sg.id]
+  subnet_id              = var.public_subnet_ids[0]
 
   user_data = <<-EOF
               #!/bin/bash
-              dnf update -y
-              dnf install -y docker
+              apt-get update -y
+              apt-get install -y docker.io docker-compose
               systemctl start docker
               systemctl enable docker
+              usermod -aG docker ubuntu
               EOF
 
   tags = {
-    Name = "ATS-Backend-Server"
+    Name = "ATS Resume"
   }
 }
 
-# --- 3. Database (DynamoDB) ---
-# Satisfies LO1: Core cloud services
+# --- 3. Database (DynamoDB - Multi-Table Schema) ---
 
 resource "aws_dynamodb_table" "resumes_table" {
-  name           = "ats_resumes_${var.student_id}"
-  billing_mode   = "PROVISIONED"
-  read_capacity  = 5
-  write_capacity = 5
-  hash_key       = "id"
+  name         = "ats_resumes"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "resume_id"
 
   attribute {
-    name = "id"
+    name = "resume_id"
     type = "S"
   }
 }
 
-# --- 4. Auth (Cognito) ---
-# Satisfies LO3: Security best practices
+resource "aws_dynamodb_table" "jobs_table" {
+  name         = "ats_jobs"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "job_id"
 
-resource "aws_cognito_user_pool" "pool" {
-  name = "ats-user-pool-${var.student_id}"
+  attribute {
+    name = "job_id"
+    type = "S"
+  }
 }
 
-resource "aws_cognito_user_pool_client" "client" {
-  name         = "ats-client"
-  user_pool_id = aws_cognito_user_pool.pool.id
+resource "aws_dynamodb_table" "users_table" {
+  name         = "ats_users"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "user_id"
+
+  attribute {
+    name = "user_id"
+    type = "S"
+  }
 }
 
-# --- 5. Secrets Manager (LO3: Security) ---
+# --- 4. Auth (Existing Cognito Setup) ---
+
+# Fetching the existing User Pool
+data "aws_cognito_user_pool" "selected" {
+  user_pool_id = "us-east-1_5rSehoZbr"
+}
+
+# Fetching the existing App Client
+data "aws_cognito_user_pool_client" "selected" {
+  client_id    = "4td5k9rcuoph3fs5q67gjji93p"
+  user_pool_id = data.aws_cognito_user_pool.selected.id
+}
+
+
+# --- 5. Secrets Manager (Security) ---
 
 resource "aws_secretsmanager_secret" "ats_secrets" {
   name                    = "ats/backend/secrets-${var.student_id}"
@@ -228,21 +248,28 @@ resource "aws_secretsmanager_secret_version" "ats_secrets_v1" {
   secret_id     = aws_secretsmanager_secret.ats_secrets.id
   secret_string = jsonencode({
     GEMINI_API_KEY          = "${var.gemini_api_key}"
-    COGNITO_USER_POOL_ID    = aws_cognito_user_pool.pool.id
-    COGNITO_APP_CLIENT_ID   = aws_cognito_user_pool_client.client.id
+    COGNITO_USER_POOL_ID    = data.aws_cognito_user_pool.selected.id
+    COGNITO_APP_CLIENT_ID   = data.aws_cognito_user_pool_client.selected.id
     COGNITO_REGION          = var.aws_region
+    COGNITO_DOMAIN          = "https://us-east-15rsehozbr.auth.us-east-1.amazoncognito.com"
+    COGNITO_REDIRECT_URI    = "https://nandhakumar.works/api/auth/callback"
+    COGNITO_LOGOUT_URI      = "https://nandhakumar.works"
     DDB_RESUMES_TABLE       = aws_dynamodb_table.resumes_table.name
+    DDB_JOBS_TABLE          = aws_dynamodb_table.jobs_table.name
+    DDB_USERS_TABLE         = aws_dynamodb_table.users_table.name
+    ECR_REGISTRY            = "857238695432.dkr.ecr.us-east-1.amazonaws.com/ats"
+    VITE_API_BASE           = "https://nandhakumar.works/api"
   })
 }
 
-# --- 6. CloudWatch Logs (LO5: Observability) ---
+# --- 6. CloudWatch Logs (Observability) ---
 
 resource "aws_cloudwatch_log_group" "docker_logs" {
   name              = "/ats-resume/docker"
   retention_in_days = 7
 }
 
-# --- 7. CloudWatch Operational Dashboard (CPP LO5: Observability) ---
+# --- 7. CloudWatch Operational Dashboard (Observability) ---
 resource "aws_cloudwatch_dashboard" "main" {
   dashboard_name = "ATS-Resume-Operational-Dashboard"
 
@@ -278,7 +305,7 @@ resource "aws_cloudwatch_dashboard" "main" {
   })
 }
 
-# --- 8. Proactive Monitoring (CPP LO5: Fault Tolerance) ---
+# --- 8. Proactive Monitoring (Fault Tolerance) ---
 resource "aws_cloudwatch_metric_alarm" "cpu_alarm" {
   alarm_name          = "ATS-Backend-High-CPU-Alarm"
   comparison_operator = "GreaterThanOrEqualToThreshold"

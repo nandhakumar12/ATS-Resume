@@ -1,3 +1,4 @@
+import logging
 import uuid
 from typing import List
 
@@ -8,6 +9,7 @@ from app.models.resume import JobCreate, JobResponse
 from app.models.user import User
 from app.services.auth_service import get_current_user
 
+logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
@@ -28,7 +30,7 @@ async def create_job(
     try:
         table.put_item(Item=item)
     except Exception as e:
-        print(f"Create Job Error: {str(e)}")
+        logger.error(f"Create Job DynamoDB Error: {type(e).__name__}: {str(e)}", exc_info=True)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to create job in database: {str(e)}"
