@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+from typing import Optional
 
 import boto3
 from botocore.exceptions import ClientError
@@ -16,10 +17,10 @@ class SecretsManager:
     Secret name is set via the AWS_SECRET_NAME environment variable.
     For this project: ats/backend/secrets-25126067
     """
-    _cached_secrets: dict | None = None
+    _cached_secrets: Optional[dict] = None
 
     @classmethod
-    def get_secrets(cls) -> dict:
+    def get_secrets(cls) -> Optional[dict]:
         """Fetch secrets from AWS Secrets Manager (cached after first call)."""
         if cls._cached_secrets is not None:
             return cls._cached_secrets
