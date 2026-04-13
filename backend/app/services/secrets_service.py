@@ -87,8 +87,12 @@ def inject_secrets() -> None:
     injected = 0
     for key, value in secrets.items():
         if value:
-            os.environ[key] = str(value)
-            injected += 1
-            logger.info(f"  ✓ Injected secret: {key}")
+            # ONLY inject if the key is not already set (prevents overwriting docker-compose fallback)
+            if key not in os.environ:
+                os.environ[key] = str(value)
+                injected += 1
+                logger.info(f"  ✓ Injected secret: {key}")
+            else:
+                logger.info(f"  - Skipped secret (already set in environment): {key}")
 
     logger.info(f"Secrets Manager: injected {injected} secrets into environment.")

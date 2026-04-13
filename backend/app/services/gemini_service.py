@@ -68,6 +68,7 @@ IMPROVEMENTS:
 Ensure the STRENGTHS and IMPROVEMENTS sections use bullet points starting with "- ".
 """
 
+        last_error = "All models failed"
         for model_name in self.models_to_try:
             for attempt in range(retries + 1):
                 try:
@@ -82,7 +83,8 @@ Ensure the STRENGTHS and IMPROVEMENTS sections use bullet points starting with "
                         logger.warning(f"Empty text response from {model_name}")
                 
                 except Exception as e:
-                    err_msg = str(e).lower()
+                    last_error = str(e)
+                    err_msg = last_error.lower()
                     if "429" in err_msg:
                         wait_time = (attempt + 1) * 12
                         logger.warning(f"Rate limit (429) on {model_name}. Retrying in {wait_time}s...")
@@ -97,10 +99,10 @@ Ensure the STRENGTHS and IMPROVEMENTS sections use bullet points starting with "
                             continue
                         break
 
-        logger.error("All Gemini AI models failed or returned no results.")
+        logger.error(f"All Gemini AI models failed. Last error: {last_error}")
         return {
             "score": 0,
-            "reasoning": "AI analysis is currently unavailable (API Connection Error).",
+            "reasoning": f"AI analysis is currently unavailable. (Reason: {last_error})",
             "strengths": [],
             "improvements": []
         }
