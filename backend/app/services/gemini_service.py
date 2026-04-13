@@ -20,92 +20,81 @@ class GeminiService:
     """
 
     def __init__(self):
-        api_key = os.getenv("GEMINI_API_KEY")
-        if not api_key:
-            raise ValueError("GEMINI_API_KEY environment variable is not set.")
-        
-        genai.configure(api_key=api_key)
-        
+        genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+        # Updated model identifiers with 'models/' prefix
         self.models_to_try = [
-            "gemini-1.5-flash",
-            "gemini-1.5-pro",
-            "gemini-1.0-pro",
-            "gemini-pro",
+            "models/gemini-1.5-flash",
+            "models/gemini-1.5-pro",
+            "models/gemini-1.0-pro",
+            "models/gemini-pro",
         ]
-        logger.info("GeminiService initialized with models: %s", self.models_to_try)
+        logger.info("GeminiService initialized. Default models: %s", self.models_to_try)
 
     def analyze_resume(
         self,
         resume_text: str,
         job_description: str,
         job_title: str = "the role",
-        retries: int = 2
+        retries: int = 1
     ) -> dict:
         """
-        Send sanitized resume to Gemini for analysis with fallback and backoff.
+        Send sanitized resume to Gemini. Uses discovery if hardcoded models fail.
         """
+        
+        # 1. TRY HARDCODED MODELS FIRST
+        result = self._try_models(self.models_to_try, resume_text, job_description, job_title, retries)
+        if result["score"] > 0:
+            return result
 
+        # 2. DISCOVERY MODE: If 404s/fails occur, find what's actually available on this key
+        logger.info("Primary models failed. Entering Discovery Mode...")
+        try:
+            available_models = [m.name for m in genai.list_models() if "generateContent" in m.supported_generation_methods]
+            logger.info("Discovered available models on this account: %s", available_models)
+            
+            # Filter for Gemini models we haven't tried yet
+            new_models = [m for m in available_models if m not in self.models_to_try and "gemini" in m.lower()]
+            if new_models:
+                logger.info("Trying discovered models: %s", new_models)
+                return self._try_models(new_models, resume_text, job_description, job_title, 0)
+        except Exception as e:
+            logger.error("Model discovery failed: %s", e)
+
+        return result
+
+    def _try_models(self, models, resume_text, job_description, job_title, retries):
         prompt = f"""
-You are an expert Applicant Tracking System (ATS) specializing in professional recruitment. 
-Analyze the provided anonymised resume against the job description for the role of '{job_title}'.
-The resume has been anonymised for privacy and bias mitigation.
-
---- JOB DESCRIPTION ---
-{job_description}
-
---- RESUME (ANONYMISED) ---
-{resume_text}
-
---- REQUIRED RESPONSE FORMAT ---
-You MUST provide your response in the exact format below:
-SCORE: [An integer between 0 and 100]
-REASONING: [1-2 sentences explaining the score]
+You are an expert ATS. Analyze the resume against the job description for '{job_title}'.
+RESPONSE FORMAT:
+SCORE: [0-100]
+REASONING: [1-2 sentences]
 STRENGTHS:
-- [Matching Skill/Experience 1]
+- [Skill 1]
 IMPROVEMENTS:
-- [Missing Skill/Experience 1]
-
-Ensure the STRENGTHS and IMPROVEMENTS sections use bullet points starting with "- ".
+- [Skill 1]
+---
+JOB: {job_description}
+RESUME: {resume_text}
 """
-
-        last_error = "All models failed"
-        for model_name in self.models_to_try:
+        last_error = "Connection pending"
+        for model_name in models:
             for attempt in range(retries + 1):
                 try:
-                    logger.info(f"Attempting Gemini AI Analysis: model={model_name}, attempt={attempt+1}")
+                    logger.info(f"Trying Gemini AI: {model_name} (Attempt {attempt+1})")
                     model = genai.GenerativeModel(model_name)
                     response = model.generate_content(prompt)
                     
                     if response and response.text:
-                        logger.info(f"Received valid response from {model_name}")
                         return self._parse_response(response.text)
-                    else:
-                        logger.warning(f"Empty text response from {model_name}")
-                
                 except Exception as e:
                     last_error = str(e)
-                    err_msg = last_error.lower()
-                    if "429" in err_msg:
-                        wait_time = (attempt + 1) * 12
-                        logger.warning(f"Rate limit (429) on {model_name}. Retrying in {wait_time}s...")
-                        time.sleep(wait_time)
-                    elif "404" in err_msg or "not found" in err_msg or "unsupported" in err_msg:
-                        logger.warning(f"Model {model_name} unavailable: {e}. Trying different model...")
-                        break
-                    else:
-                        logger.error(f"Gemini API Error ({model_name}): {e}")
-                        if attempt < retries:
-                            time.sleep(2)
-                            continue
-                        break
-
-        logger.error(f"All Gemini AI models failed. Last error: {last_error}")
-        return {
-            "score": 0,
-            "reasoning": f"AI analysis is currently unavailable. (Reason: {last_error})",
-            "strengths": [],
-            "improvements": []
-        }
+                    logger.warning(f"Error on {model_name}: {last_error}")
+                    if "429" in last_error:
+                        time.sleep(5)
+                    elif "404" in last_error:
+                        break # Try next model immediately
+        
+        return {"score": 0, "reasoning": f"AI unavailable. (Error: {last_error})", "strengths": [], "improvements": []}
 
     def _parse_response(self, text: str) -> dict:
         """Parse Gemini response with robust regex parsing."""
