@@ -8,11 +8,24 @@ services:
     ports:
       - "8000:8000"
     environment:
-      # Only 2 env vars needed — everything else is loaded from AWS Secrets Manager at startup.
-      # inject_secrets() in main.py fetches the secret using the EC2 LabInstanceProfile IAM role.
-      # Secret name: ats/backend/secrets-25126067
+      # --- Core AWS config (always needed for boto3) ---
       - AWS_REGION=${AWS_REGION:-us-east-1}
+      # Secrets Manager secret name — inject_secrets() loads all other config from here.
+      # If secret is unavailable (expired lab), fallback env vars below are used instead.
       - AWS_SECRET_NAME=ats/backend/secrets-25126067
+
+      # --- Fallback values (used if Secrets Manager is unavailable) ---
+      # inject_secrets() will NOT overwrite these if they are already set here.
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-AIzaSyCvfG-gEsBjeam054I9B5Gk3h8xjWX8jng}
+      - DDB_USERS_TABLE=${DDB_USERS_TABLE:-ats_users}
+      - DDB_RESUMES_TABLE=${DDB_RESUMES_TABLE:-ats_resumes}
+      - DDB_JOBS_TABLE=${DDB_JOBS_TABLE:-ats_jobs}
+      - COGNITO_REGION=${COGNITO_REGION:-us-east-1}
+      - COGNITO_USER_POOL_ID=${COGNITO_USER_POOL_ID:-us-east-1_5rSehoZbr}
+      - COGNITO_APP_CLIENT_ID=${COGNITO_APP_CLIENT_ID:-4td5k9rcuoph3fs5q67gjji93p}
+      - COGNITO_DOMAIN=${COGNITO_DOMAIN:-https://us-east-15rsehozbr.auth.us-east-1.amazoncognito.com}
+      - COGNITO_REDIRECT_URI=${COGNITO_REDIRECT_URI:-https://nandhakumar.works/api/auth/callback}
+      - COGNITO_LOGOUT_URI=${COGNITO_LOGOUT_URI:-https://nandhakumar.works}
 
     networks:
       - ats-network

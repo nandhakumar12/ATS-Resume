@@ -71,20 +71,24 @@ def inject_secrets() -> None:
     os.environ so the rest of the app can use os.getenv() as normal.
 
     Called once at startup in main.py before any routes are loaded.
-    Secrets already set in the environment are NOT overwritten
-    (allows local .env overrides to take precedence in dev).
+
+    Priority order: Secrets Manager > docker-compose env vars.
+    The docker-compose values are only fallback defaults used when
+    Secrets Manager is unavailable (expired lab, deleted secret, local dev).
     """
     secrets = SecretsManager.get_secrets()
+    if not secrets:
+        logger.warning(
+            "Secrets Manager returned empty — app will use docker-compose fallback env vars. "
+            "This is normal in local dev or when the lab secret has not been created."
+        )
+        return
+
     injected = 0
     for key, value in secrets.items():
-        if value and key not in os.environ:
+        if value:
             os.environ[key] = str(value)
             injected += 1
             logger.info(f"  ✓ Injected secret: {key}")
-        elif key in os.environ:
-            logger.debug(f"  ~ Skipped (already set in env): {key}")
 
-    if injected:
-        logger.info(f"Secrets Manager: injected {injected} secrets into environment.")
-    else:
-        logger.info("Secrets Manager: no new secrets injected (all already in env or empty).")
+    logger.info(f"Secrets Manager: injected {injected} secrets into environment.")
