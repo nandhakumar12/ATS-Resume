@@ -1,0 +1,60 @@
+Metadata-Version: 2.4
+Name: CloudResumeSanitizer
+Version: 1.0.1
+Summary: A professional OOP library for PII redaction in recruitment documents.
+Home-page: https://github.com/nandhakumar12/ATS-Resume
+Author: Nandhakumar Thangaraju
+Author-email: nt.25126067@student.ncirl.ie
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Security
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: requires-python
+Dynamic: summary
+
+# CloudResumeSanitizer
+# ====================
+# A professional OOP library for PII (Personally Identifiable Information)
+# redaction in cloud-native recruitment systems.
+#
+# Research motivation: Brookings Institution (2024) & MIT Sloan (Li et al., 2023)
+# on Algorithmic Bias in Automated Hiring.
+
+## Installation
+
+```bash
+pip install -e backend/app/libraries/sanitizer
+```
+
+## Usage
+
+```python
+from sanitizer import ResumeSanitizer
+
+sanitizer = ResumeSanitizer()
+clean_text = sanitizer.sanitize_text(resume_text)
+```
+
+## Purpose
+
+This library strips PII (Names, Emails, Phone Numbers, LinkedIn URLs) from
+resume text before it is sent to a cloud AI service (Google Gemini). This
+implements the "Blind Hiring" technique recommended by academic research to
+reduce Algorithmic Bias in recruitment systems.
+
+## Features
+
+- Email Redaction
+- Phone Number Redaction
+- LinkedIn URL Redaction
+- Physical Address Redaction
+- Configurable Mask Character (default: [REDACTED])

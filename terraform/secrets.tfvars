@@ -10,4 +10,4 @@ public_subnet_ids = ["subnet-0cdedba44a5f4a957"]
 
 # --- Domain & AI ---
 domain_name    = "nandhakumar.works"
-gemini_api_key = "AIzaSyCvfG-gEsBjeam054I9B5Gk3h8xjWX8jng"
+gemini_api_key = "AIzaSyBC2h0imuf5cabN_V28RWeQBSy1DnLkpBA"

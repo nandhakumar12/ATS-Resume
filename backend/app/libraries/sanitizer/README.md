@@ -2,9 +2,6 @@
 # ====================
 # A professional OOP library for PII (Personally Identifiable Information)
 # redaction in cloud-native recruitment systems.
-#
-# Research motivation: Brookings Institution (2024) & MIT Sloan (Li et al., 2023)
-# on Algorithmic Bias in Automated Hiring.
 
 ## Installation
 
@@ -24,9 +21,7 @@ clean_text = sanitizer.sanitize_text(resume_text)
 ## Purpose
 
 This library strips PII (Names, Emails, Phone Numbers, LinkedIn URLs) from
-resume text before it is sent to a cloud AI service (Google Gemini). This
-implements the "Blind Hiring" technique recommended by academic research to
-reduce Algorithmic Bias in recruitment systems.
+resume text before it is processed by cloud-based AI engines.
 
 ## Features
 

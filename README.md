@@ -1,52 +1,50 @@
 # AI-Powered ATS Resume Platform
 
-This is a modern Applicant Tracking System (ATS) that uses AI to parse resumes, analyze skills, and compute compatibility scores against job descriptions. The platform features a premium monochrome design and includes secure authentication via AWS Cognito.
+This is a cloud-native application designed to help recruiters parse resumes and score them using AI. It uses a combination of NLTK for keyword matching and Google Gemini for semantic scoring.
 
 ## Tech Stack
-*   **Frontend**: React.js with Vite, Vanilla CSS for premium monochrome styling.
-*   **Backend**: Python FastAPI for high-performance API endpoints.
-*   **Database**: Amazon DynamoDB for scalable, NoSQL data storage.
-*   **Auth**: AWS Cognito (OAuth 2.0 / OIDC) for secure user login and registration.
-*   **Parsing**: SpaCy and NLTK for natural language processing of resume text.
-*   **Deployment**: Docker and Docker Compose for containerized environment management.
+*   **Frontend**: React (Vite)
+*   **Backend**: FastAPI (Python)
+*   **Proxy**: Nginx
+*   **Database**: AWS DynamoDB
+*   **Auth**: AWS Cognito
+*   **Infrastructure**: Terraform
 
-## How to Run the Project
+## Project Structure
+*   `backend/` - The Python API
+*   `frontend/` - The React app
+*   `terraform/` - AWS infrastructure files
+*   `figures/` - Diagrams for the report
 
-### Prerequisites
-*   Docker and Docker Compose installed.
-*   AWS Credentials configured for DynamoDB access.
+## Setup Instructions
 
-### Running with Docker (Recommended)
-The easiest way to run the entire stack is using Docker Compose:
+### 1. Environment Variables
+Create a `.env` file in the root with your keys:
+*   `GOOGLE_API_KEY`
+*   `AWS_REGION`
+*   `USER_POOL_ID`
+
+### 2. AWS Setup
+If you want to create the resources on AWS, use Terraform:
 ```bash
-docker-compose up --build -d
+cd terraform
+terraform init
+terraform apply
 ```
-The app will be available at `http://localhost`.
 
-### Manual Local Setup
+### 3. Run with Docker
+The easiest way to run the app is using Docker Compose:
+```bash
+docker-compose up --build
+```
+The app will be available on your localhost.
 
-#### Backend Setup
-1.  Navigate to the backend folder: `cd backend`
-2.  Install dependencies: `pip install -r requirements.txt`
-3.  Start the server: `uvicorn app.main:app --reload`
+## Security & Cleanup
+The project includes a custom PII sanitizer library I built called `CloudResumeSanitizer`. You can find it on PyPI. It removes names and emails before sending data to the AI.
 
-#### Frontend Setup
-1.  Navigate to the frontend folder: `cd frontend`
-2.  Install dependencies: `npm install`
-3.  Start the development server: `npm run dev`
+We also use:
+*   **Bandit** for code security scans
+*   **OWASP ZAP** for website security testing
+*   **SonarCloud** for overall code quality
 
-## Useful Project Commands
-
-### Git Commands
-Used for version control and saving progress:
-*   `git add .` - Stage all changes.
-*   `git commit -m "Your message here"` - Commit your changes locally.
-*   `git push` - Upload your commits to GitHub.
-*   `git pull` - Get the latest changes from the repository.
-
-### Docker Commands
-Used for managing the application environment:
-*   `docker-compose up -d` - Start the application in the background.
-*   `docker-compose down` - Stop and remove all containers.
-*   `docker-compose up --build -d` - Rebuild images and start the containers (use this after code changes).
-*   `docker-compose logs -f` - View real-time logs for debugging.
+Deployed at: https://www.nandhakumar.works

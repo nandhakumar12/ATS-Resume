@@ -1,0 +1,8 @@
+README.md
+setup.py
+src/CloudResumeSanitizer.egg-info/PKG-INFO
+src/CloudResumeSanitizer.egg-info/SOURCES.txt
+src/CloudResumeSanitizer.egg-info/dependency_links.txt
+src/CloudResumeSanitizer.egg-info/top_level.txt
+src/sanitizer/__init__.py
+src/sanitizer/core.py
