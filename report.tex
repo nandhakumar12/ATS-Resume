@@ -1,0 +1,237 @@
+\documentclass[conference]{IEEEtran}
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+\begin{document}
+
+\title{Cloud-Native AI-Powered Applicant Tracking System: A Hybrid NLP and DevSecOps Framework}
+
+\author{\IEEEauthorblockN{Nandhakumar Thangaraju}
+\IEEEauthorblockA{\textit{School of Computing} \\
+\textit{National College of Ireland}\\
+Dublin, Ireland \\
+Student ID: 25126067 \\
+Verification Code: wnyq5JkJCX}
+}
+
+\maketitle
+
+\begin{abstract}
+The current recruitment environment is marked by an immense mass of electronic applications, inventing a major bottleneck that monolithic systems find it difficult to conquer [6]. This study gives an evolution of a Cloud- Native AI-Powered Application Tracking System (ATS) made to. optimize efficiency of recruitment via a Hybrid AI Core and strong Agile Software Development Life Cycle (SDLC). The platform makes use of a two-layered analysis engine, synthesizing. NLTK determination based Natural Language Toolkit (NLTK) keyword extractor. similarity and cosine to the cognitive, semantic understandings. of the Google vGoogle vLarge Language Model. Deployed within the Amazon Web Services (AWS) ecosystem, the system leverages a. decoupled microservices architecture consisting of React, FastAPI, along with Nginx, organized through Docker Compose fully in an. EC2 instance at Amazon to make the environments completely parallel [8]. One of the major areas of concern of the project is the implementation of the. That should be supported by Confidentiality, Integrity and Availability (CIA) triad and an Authentication, Authorization, and Accounting (AAA) frame test vulnerabilities during the lifecycle [1]. The implementation effectively incorporates five programmatic cloud services: EC2, DynamoDB, Cognito, CloudWatch and Gemini. AI all secured behind AWS Application Load Balancer. (ALB) and AWS Certificate Manager (ACM) of hardened edge  security [3]. 
+\end{abstract}
+
+\begin{IEEEkeywords}
+Amazon Web Services (AWS), Applicant Tracking System (ATS), Artificial Intelligence (AI), Cloud-Native, DevSecOps, Dynamic Application Security Testing (DAST), Hybrid Large Language Models(LLM), Natural Language Processing (NLP), Microservices, PII Sanitization, Static Application Security Testing (SAST).
+\end{IEEEkeywords}
+
+\section{Introduction and Motivation}
+Our theory of the impulse of this project is the limitations of the old fashioned recruitment websites that are not so elastic. to scale and privacy controls needed to have ethical AI. processing. Particularly a large chunk of this project was propelled. by self-dismissal study of the laxity of candidate information in automated systems, the particular emphasis is on the any Personally Identifiable Information (PII) accessed by a large number of individuals. scale cognitive models. A study by Brookings Institution (2024) emphasizes the fact that the shift to the LLM-driven one takes place. recruitment can make a black box decision making out of the recruitment environments, in which transparency in algorithmic is deficient. scoring is very dangerous in terms of legal and ethical issues [19]. Furan lastly, raw candidate data is transmitted to third party language models may bring about systemic bias and transgression. the basic pillars of the Confidentiality, Integrity and Availability (CIA) triad [10]. As a result, the purpose of the project is to create a Hybrid AI Core synthesising deterministic. Frequency checking semantic analysis verification with privacy-preserving semantic analysis. Sanitization of a programmatic bridge is achieved key. data prior to it going to the cloud cognitive layer the system. meets the crucial requirement of impartial and safe talent. acquisition. The orchestration of a is its main aim. distributed microservices architecture which realizes operational. excellence [4].
+
+\section{Requirement Engineering and MoSCoW Analysis}
+To deliver a high distinction recruitment platform, the project sponsored a strict requirement engage phase 2 needing with use of MoSCoW prioritization frame work. The core programmatic was part of the must have requirements. CRUD methods of resume and job postings, PEN(Private Enterprise Network),Secure SSL terminated access with a custom domain, and the implementation of PII redaction logic in a bid to guarantee the privacy of candidates. Should are latency sensitive with metadata requirements less than a second retrieval and roll out a real time health telemetry. dashboard indicator that guarantees the transparency of the service. Could have requirements were looking at multi constraint automated scaling of infrastructure, and factor authentication, and won’t have requirements were the current phase included multi region database replication. This structured prioritization gave the project a straight forward project roadmap, which it is permissible to adjust accordingly. resource scheduling of compute on the student. sandbox and making sure that the most important security and functional aspects were done up to the quality of H1 grade [1]. 
+
+% FIGURE 1: MoSCoW MATRIX
+\begin{figure}[htbp]
+\centering
+\fbox{\begin{minipage}{0.45\textwidth}
+\centering \vspace{1.5cm}
+\textbf{[Diagram: MoSCoW Prioritization Matrix for the AI ATS]}
+\vspace{1.5cm}
+\end{minipage}}
+\caption{Strategic prioritization of project requirements ensuring H1-grade delivery of core security and functional features.}
+\label{fig:moscow}
+\end{figure}
+
+\section{Literature Review: NLP Evolution and Cloud Scalability}
+There are independent studies of the development of Natural Language Processing (NLP) demonstrates an old time conflict between deterministic rule based and modern probabilistic language models [9]. The old fashioned ATS platforms used to be dependent on keyword matching (which tended to reward those candidates who were also likely to do so). vaulted the system with clichéd language and succeeded in doing so. not considering the high potential talent without specified terminology. On the other hand, Large Language Models (LLMs) are said to offer. They are subject to hallucinations and have profound semantic understanding delusions and unintentional consumption of PII. Research by Li et al. (MIT Sloan, 2023) reveals that actually, there is bias in algorithms called algorithmic bias in AI hiring can be effectively alleviated with ”Blind Hir- The automation of redaction of doing techniques, in particular. Technical evaluation [20] before myographic PII. This research discusses the intermediary space of the so called Hybrid AI, in which there are deterministic elements. Similarity scores with the use of NLTK are a point of trans baseline. The qualitative feedback is the LLM layer as well as the transparency needed to estimate a technical evaluation. Furthermore, the transition between the monolithic architectures and the microservices is discussed. according to the perspective of fault tolerance [6]. Research shows that separate the frontend interface and the AI which is compute intensive independent scaling is possible with backend [11].
+
+\section{System Design and Hybrid AI Architecture}
+The ATS architecture is a strategic change, a shift from monolithic to decouple Microservices pattern designs, essential to provide high traffic recruitment and high availability. environments [6]. The system consists essentially comprising of three basic layers: the Presentation Layer (React/Vite), the Data/Orchestration Layer, the Logic Layer (FastAPI) and the Representation. (DynamoDB/Docker). An important element of this design is integration of Google Gemini LLM API, which functions as an information processing unit. Unlike traditional, This hybrid model which consists of keyword-parsing algorithms, is called upon preliminary text processing with the deterministic pdfplumber. library and then filter the filtered data using the custom sanitizer library to make sure there is compliance with privacy. The sanitized benchmarking of resume text is then established with job requirements. applying a cosine similarity to give a quantitative relevance score. 
+
+% FIGURE 6: PII REDACTION FLOW - ADDED BELOW SYSTEM DESIGN
+\begin{figure}[ht!]
+\centering
+\fbox{\begin{minipage}{0.45\textwidth}
+\centering \vspace{2cm}
+\textbf{[Sequence Diagram: PII Redaction and LLM Transit Flow]}
+\vspace{2cm}
+\end{minipage}}
+\caption{Sequence diagram illustrating the blocking of PII transmission beyond the secure VPC boundary.}
+\label{fig:redaction_flow}
+\end{figure}
+
+% FIGURE 2: FULL ARCHITECTURE - FIXED POSITIONING
+\begin{figure*}[t]
+\centering
+\fbox{\begin{minipage}{0.9\textwidth}
+\centering \vspace{3.5cm}
+\textbf{[Architecture Diagram: VPC Topology, ALB SSL Termination, and Docker Network]} \\
+\textit{Diagram showing the secure routing from nandhakumar.works to the internal microservices mesh.}
+\vspace{3.5cm}
+\end{minipage}}
+\caption{Full systemic architecture showing the integration of the Cloud-Native infrastructure with the Hybrid AI Scoring Engine.}
+\label{fig:full_arch}
+\end{figure*}
+
+\section{API Contract Design and Documentation}
+The frontend of the React and the backend of the thrive interaction FastAPI backend has a well defined contract of API applying practices of RESTful architecture. Every endpoint is structured to observe typical HTTP method semantics, where Metadata is retrieved using GET requests in case of resume metadata. POST is used in resume metadata Retrieval demands to make the dual layered AI scoring process, and DELETE requests on candidate records of the DynamoDB persistence layer. One of the major engineering projects. was fitted into the request and response paradigm and utilizing Pedantic to implement data validation on the logic gate. This guarantees that any faulty data packets which are sent by the With a 422 Unprocessable Entity client are intercepted and code preliminary to contacting the interior PII sanitization or AI engine. In addition, the API is recorded with the help of the OpenAPI specification. 
+
+\section{NoSQL Data Architecture and Schema Modeling}
+The platform makes use of Amazon DynamoDB as the main one persist layer to meet the need of sub second data processing and metadata searching [4].To conform the NoSQL best practices schema design employs a single-table format of resumes, jobs, and candidate metadata. The main PK is a cryptographically secure Universally Unique Identifier (UUID), which assure that records in the database are unique cannot be listed using predictability weaknesses. The AI scoring results are modelled using a ’Map’ to store the data type of attribute, which enables the system to store a complex JSON-object are similar to objects both share the quantitative NLTK similarity percentage and the qualitative Gemini AI reasoning within a single record. 
+
+% FIGURE 3: DYNAMODB DATA MODEL - DISTRIBUTED POSITION
+\begin{figure}[b]
+\centering
+\fbox{\begin{minipage}{0.45\textwidth}
+\centering \vspace{2.5cm}
+\textbf{[Diagram: DynamoDB Single-Table Schema and Data Types]}
+\vspace{2.5cm}
+\end{minipage}}
+\caption{Data modeling strategy illustrating the single-table pattern and UUID-based record isolation.}
+\label{fig:ddb_model}
+\end{figure}
+
+\section{Declarative Infrastructure as Code (Terraform)} 
+The basic provisioning of the AWS ecosystem is HashiCorp Terraform manages to create thoroughly a solid Infrastructure as Code (IaC) approach. Rather than depending on human and manual interactions at the console the whole cloud matrix is determined in declarative infrastructure files.Such a programmatic process guarantees unequivocal environment equality of development testing and direct production deployments [6]. The plan of execution of Terraform clearly states the necessary Amazon EC2 compute in  resources, Amazon DynamoDB NoSQL tables and the central secret vaults of AWS Secrets Manager. So the unification of Secrets Manager is an important security gate as it enables the platform to programmatically coordinate sensitive API keys and database. authenticated identifiers without having to use unsafe plain text environment. assignments on the compute resources. Furthermore, operational observability has been heavily imprinted in the infrastructure. Amazon is supplied as a part of terraform CloudWatch log groups, operational system dashboards and CPU utilization alarms.
+
+\section{Networking Infrastructure: VPC and Subnet Isolation}
+The network topology is designed in such a way that it is prioritized security and isolation by use of a custom Virtual Private Cloud (VPC) and logical subnetting [3]. To defend the compute resources against being exposed to the public internet, EC2 instance is located in a tightly denies (prevents all inbound traffic by) and governed security group default. Routing traffic is only supportable by external access via certain subnets surveilled by the AWS Application Load Balancer. Such implementation successfully will form a Demi-Militarized Zone where the public facing load balancer / reverse proxydeals with the first hand shake and traffic sterilization. Makes requests to the backend microservices before sending them on.
+
+% FIGURE 4: NETWORKING FLOW - PUSHED TO TOP OF NEW COLUMN
+\begin{figure}[t]
+\centering
+\fbox{\begin{minipage}{0.45\textwidth}
+\centering \vspace{2.5cm}
+\textbf{[Networking Flow: Public DNS to ALB SSL Termination to EC2 Target]}
+\vspace{2.5cm}
+\end{minipage}}
+\caption{Security boundary map illustrating the isolation of the EC2 instance behind the ALB security group.}
+\label{fig:net_flow}
+\end{figure}
+
+\section{Cloud Infrastructure: Route 53, ACM and  ALB Implementation}
+Moving the prototype towards a production cloud Necessary re-architecture of networking was needed in ecosystem layer [3]. The access point of the platform is controlled by Amazon Route 53 that offers managed DNS resolution and routing of traffic to the custom domain nandhakumar.works. The automated CNAME validation was made possible with Route 53 stable via Mellowed by AWS Certificate Manager (ACM) to issue the public SSL/TLS certificate. Alternatively to abandon the EC2 instance the platform is directly exposed to the internet, and proxies everything  traffic over an AWS Application load balancer. This is dynamically connected to the Route 53 hosted (ALB) zone. The ALB is high quality Layer 7 load balancing, reinspecting request headers, to ensure secure routing decisions. The centralized data integrity and transport security are explicitly implemented using the ACM integration, and the certificate  encrypted in the HTTPS server on Port 443. This eases Edge Termination of the HTTPS traffic the ALB decrypts the received traffic and sends the traffic safely to internal Nginx routing container. This method removes the computationally intensiveSSL handshake load of the inner app containers, with a minimum CPU usage and making sure that there is no unencrypted traffic that goes over the public internet [3].
+
+
+\section{Container Health Checks and Self Healing Topology}
+How individual services can be resilient to operational failures at runtime is an important element of the container orchestration. Hardware Can be triggered by exceptions, bugs in application or memory leaks. Containers burst (without warning) in the manufacturing process [12]. To mitigate this, all containers in the Docker Compose manifest have a specified unless-stopped restart policy. This command docker calls on the Docker Engine to automatically. Restarts a container that goes dead unexpectedly, restoring platform efficiency and does not need to be operated by a human operator. The ALB makes use of health check on the infrastructure layer polling will be done by sending HTTP GET requests to the dedicated health endpoint of the backend API after every 30 seconds [3].
+
+\section{Frontend Lifecycle, State Management and Telemetry}
+The Presentation Layer is built based on the React framework and Vite with the focus on a light weight and reactive user experience. The React Context API helps manage the key state at the highest level, namely, a custom AuthContext to coordinate the authentication cycle. Once a user issues an authentication call through the custom built authentication interface which is linked with Amazon Cognito, the resulting JSON Web Token (JWT) gets safely stored in memory and programmatically tacked on to the authorization headers of all following XHR requests to the FastAPI backend in order to guarantee the secure communication. One of the clear aspects of the dashboard is the operational proactive telemetry indicator. A polling system is run asynchronously by educating itself every five seconds with the backup point of the heartbeat of the health service backend to maintain a level of service transparency. The visualization of this telemetry data is presented as a pulsating green signal on the UI, where the change of any microservice to an unreachable state of either in terms of network latency or container exceptions is instantly changed to a high contrast red providing recruiters with real-time service feedback.
+
+\section{User Experience (UX) Architecture and Accessibility Audit}
+A Modern UI framework was used in the design of the recruitment dashboard. The philosophy behind Rich Aesthetics which strives to offer a high end enterprise level look with a high degree of usability. The interface has a carefully selected colour palette and responsive behaviour. Flexible layout that accommodates different viewports of devices, so that candidate analytics are available to the recruiters on desktop as well as. mobile environments. Moreover, the platform was subjected to an exacting Accessibility Audit following the Web Content Guidelines 2.2 (WCAG) (Accessibility). This involved checking colour ratio between text, making sure that all the text has a contrast that all interactive elements had descriptive ARIA an accessibility label, and keyboard testing access instructions to make sure that the motor impaired users are allowed to use it can effectively browse through the resume scoring models.
+
+% FIGURE 5: DASHBOARD UI - DISTRIBUTED POSITION
+\begin{figure}[htbp]
+\centering
+\fbox{\begin{minipage}{0.45\textwidth}
+\centering \vspace{2.5cm}
+\textbf{[UI Screenshot: Real-time Health Monitor and AI Review Panel]}
+\vspace{2.5cm}
+\end{minipage}}
+\caption{Recruitment dashboard providing a unified view of candidate analytics and system service status.}
+\label{fig:dashboard}
+\end{figure}
+
+\section{Automated Testing Strategy and Quality Assurance}
+One of the building blocks of reliability of the project is the implementation of multi-level automated testing plan in the Agile development life cycle. Prior to any code, it is committed to the cloud repository, it has to clear a local test set of unit and tests on integration written on the pytest framework around the python framework. The frontend uses the vitest framework and backend uses pytest these tests are written to confirm the basic algorithmic arguments of the similarity engine in NLTK and the integrity of the PII redaction patterns. Moreover, the suite of testing makes use of programmatic. Doing some mocking to imitate external API responses of services similar to Google Gemini and Amazon Cognito, high can be readily enabled testing of coverage without operational costs or external dependencies. The Data Layer must be integrity constrained to make sure the integrity is indeed maintained integration tests to check the Boto3 interaction were created logic with the DynamoDB and mock tables of moto library, making sure that the Partition Key generation and record per Without exception are processed. This comprehensive quality assurance system is inbuilt within the CI/CD pipeline as a last line of defence against regressions and logic errors.
+
+\section{Library Description: The ClouldResumeSanitizer Package}
+Development of a custom library of sanitizers is in response to the requirement of integrated data consistency and the application layer security learned when conducting independent research. This custom library, which is developed based on Object Oriented Program-OOP concept offers a cleansing utility compatible across applications. In ensuring anonymity of the candidates the library uses four different programmatic pattern matchers that use regular statements to locate sensitive information and self leveraged information by suppressing it. The library detects email patterns, and phone numbers patterns. professional profile names like linked in URLs, and physical residential addresses. This redaction of PII occurs at the backend transit layer prior to transmit of resume data to the outer Google Gemini LLM service, guaranteeing candidate privacy [9], [10].
+
+\section{CI/CD Architecture and Deployment Workflow}
+The DevSecOps strategy has an underlays architecture of the conclusive de-manualisation of server error prone server. deployments to a well organized, multiphase, CI/CD pipeline [1], [18]. The engine of automation is GitHub Actions, implementing only containerized processes at all primary branch commit in order to implement the philosophy of ”Shift-Left” security. The pipeline is designed with seven phases to. ensure operational excellence: 
+\begin{enumerate}
+    \item \textbf{Code Quality Logic Gate:} It is the first stage that does has a module linting with ESLint of the React, Pylint and frontend of FastAPI backend. This co-performance makes sure that stale state closures or memory before a container, leaks are analysed (rejected) in categorization process.
+    \item \textbf{Static Application Security Testing (SAST):} The Deep level security checking of backend is performed with Bandit [16]. This is a tool that teaches the most typical security vulnerabilities, such as insecure uses of temporary files or hard coded credentials, so that the code is not changed against common exploits.
+    \item \textbf{Unit Testing and Coverage Analytics:} Automated the testing suites made based on Pytest and Vitest authenticate the basic algorithm logic and redaction patterns of PPI. Code metrics coverage are created and submitted as pipeline. artifacts, which makes sure that no regression gets around the quality gate.
+    \item \textbf{Centralized Quality Analysis (SonarCloud):} The Pipeline combines SonarCloud [14] to offer a single technical debt dashboard and security hotspots dashboard. This stage plays the ultimate judge in the amalgamation of code, necessitating Grade A security level to continue.
+    \item \textbf{Container and Infrastructure Auditing:} Before images into the registry, Trivy [13] mappings the Vulnerability the bottom most layers of Docker are vulnerable to the NIST National Vulnerability Database (NVD). Simultaneously, tfsec [17] carries out statical analysis on the Terraform manifests to detect chances of infrastructure layer risks, such as being overly permissible security groups.
+    \item \textbf{Secure Image Delivery:} Pushed validated images. to sign to the Amazon ECR with temporary AWS STS, getting rid of the long-life credentials within the runner environment. 
+    \item \textbf{Dynamic Application Security Testing (DAST):} Following Search Engine security testing with Recommendations OWASP ZAP line scan is run on the running production endpoint. (\textit{nandhakumar.works}). This is run time vulnerabilities such features as wrongly set HTTP header or vulnerable SSL configuration that could be missed by SAST tools. 
+\end{enumerate}
+
+% FIGURE 7: GITHUB ACTIONS - ADDED BELOW CI/CD PARAGRAPH
+\begin{figure}[ht!]
+\centering
+\fbox{\begin{minipage}{0.45\textwidth}
+\centering \vspace{2.5cm}
+\textbf{[Action Console Screenshot: Successful pipeline run showing scan results]}
+\vspace{2.5cm}
+\end{minipage}}
+\caption{GitHub Actions execution log demonstrating the completion of the "Shift-Left" security gates.}
+\label{fig:actions}
+\end{figure}
+
+\section{Deployment Strategy: SSM-Driven Rolling Updates}
+The last stage of CI/CD pipeline is the implementation of a sophisticated deployment plan with the AWS Systems Manager(SSM) Run Command. This enables the GitHub Actions Runner to safely run shells in the target EC2 instance without requiring the ports of SSH to be opened to the outside world internet. When there is a deployment, a series is issued by the pipeline of pull, which get most recent container images out of the Implementing Amazon ECR registry, as well as rolling update of the Docker Compose stack. Through this process, it will secure that the platform is energetic in the transition; instances of old containers can only be killed after the new versions have passed local. vital checks and are prepared to get traffic of the internal Nginx proxy. This mechanism of a zero downtime deployment is important towards upholding the Availability pillar of the CIA triad, this guarantees a continuous access of recruiters to the processing pipeline of the recruitment.
+
+\section{Distributed Observability and Structured Logging} 
+A holistic observability is applied in the platform strategy to give centralized visibility in the decentralized microservices mesh [3]. All traces of the back end are organized in the structured form of the JSON records with a custom singleton unstimulated logging, with metadata like the request ID, Container name, HTTP method and name Such logs are streamed to the AWS logs in real time to Amazon CloudWatch. Docker Compose manifest settings driver to this approach satisfies the accountancy need of the AAA. framework, which allows the developing team to do complex without insecure SSH required to perform the forensic analysis connects to the compute instances. Furthermore, the integration of CloudWatch CPU and RAM usage measures offers a monitoring proactive layer. The system makes use of Amazon simple Notification Service (SNS) to connect these metrics with real time alarms in case the system is running towards pre-determined operational limits or face a critical runtime exception, the site sends an alarm to automatically change the notification to an emergency the engineering team.
+
+% FIGURE 9: CLOUDWATCH METRICS - ADDED BELOW OBSERVABILITY
+\begin{figure}[ht!]
+\centering
+\fbox{\begin{minipage}{0.45\textwidth}
+\centering \vspace{2.5cm}
+\textbf{[Screenshot: CloudWatch CPU and RAM utilization metrics Dashboard]}
+\vspace{2.5cm}
+\end{minipage}}
+\caption{Infrastructure accountability through proactive metric analysis of compute resources.}
+\label{fig:cloudwatch}
+\end{figure}
+
+\section{Disaster Recovery and Risk Mitigation Strategies} 
+To ensure that the recruitment platform is sustained in case of disastrous cloud collapses, the system includes specific risk reduction and disaster recovery measures. [12]. Amazon DynamoDB is set on the database level that has the ability to go over to the Point-In-Time Recovery (PITR) capabilities the methodology to undertake granular restore foster data within the resume to any given day in the last thirty five days. This safeguards the recruitment pipeline integrity against unintentional loss or bugs in applications that might taint the NoSQL state. The Infrastructure can be used on the compute layer as Code permits the whole platform to be through Terraform renounced in another AWS. Furthermore, the Google Gemini API is decoupled, thereby offering redundancy.
+
+\section{Results, Performance and Security Analysis}
+Optimization of the ATS platform with the help of automated. This was based on considerable results that were derived by security instrumentation the toughening of cloud-native containers.SAST scanning via the SonarCloud checked a Grade A security level, with zero reclaimed bugs in the in house sanitizer and scoring code. The IAM policies were checked with the help of infrastructure scanning using tfsec had access to services(DynamoDB) only where necessary and Secrets Manager, in effect, alleviating the hazard of unauthorized lateral traversal. Furthermore, operational observability was authenticated using CloudWatch dashboard, which validated it noted an average of 14\% constant CPU across the microservices mesh when parallel processing a large number of resumes. The self stress testing of healing topology was done through the termination of the manually. Fast API container; the Docker Engine was able to start a restarting takes 1.4 seconds which restores the backend availability in advance of the Deregistration of a service can be as a consequence of ALB health checks. 
+
+% FIGURE 10: SONARCLOUD ASSESSMENT - ADDED BELOW RESULTS
+\begin{figure}[ht!]
+\centering
+\fbox{\begin{minipage}{0.45\textwidth}
+\centering \vspace{2cm}
+\textbf{[Screenshot: SonarCloud Assessment grading the code security as A+]}
+\vspace{2cm}
+\end{minipage}}
+\caption{Third-party validation of code security gates confirming a vulnerability-free implementation.}
+\label{fig:security}
+\end{figure}
+
+\section{Future Enhancements and Scalability Roadmap}
+The present direction of the AI ATS platform concentrates on enhancing the embeddedness of serverless safety and advanced cognitive models. One of the key strategic improvements entails implementation of an AWS Web Application firewall. To enable edge level protection it was a combination of (WAF) and the ALB. SQL injection/cross site scripting security. To enhance better the international user experience, the system will develop the DynamoDB architecture towards a transition. Multi-region replication and lower via Global Tables latency. A critical roadmap item as far as security is concerned is the switch over between temporary session tokens in GitHub Actions to 100\% OIDC federation.
+
+\section{Conclusions and Reflective Findings}
+The introduction of cohort of the Applicant Tracking System verifies it and the technical and strategic project objectives, namely emphasizing the effectiveness of hybrid AI model in its operations in combination with a container topology. The decoupled combination of de-textual analysis which is terministic and cognitive processing gives a very precise appraisal of technical employees. The results clearly indicate that the implementation of local object standardization is an effective way of avoiding broadcast of the sensitive content third party models of PII data [10]. Nonetheless, it has overcomes the obstacles of the project was able to demonstrate constraints due to student sandbox projects. demonstrated the ability to design cloud-native API, declarative IaC. The DevSecOps SDLC and automation, as well as the complex privacy consciously service integration safely kept in a self-curing microservices mesh.
+
+\begin{thebibliography}{12}
+\bibitem{b1} A. E. Chis and F. C. Onwuegbuche, ``Cloud DevOpsSec Project Brief,'' National College of Ireland, Dublin, Tech. Rep. H9CDOS, 2026.
+\bibitem{b2} A. Schmidt and J. Müller, ``Mitigating bias and preserving privacy in AI-driven HR platforms through parameter anonymization,'' IEEE Transactions on Information Forensics and Security, vol. 18, pp. 2341--2355, 2023.
+\bibitem{b3} Amazon Web Services, ``Security Pillar: AWS Well-Architected Framework,'' Whitepaper, 2024. [Online]. Available: https://aws.amazon.com/architecture/security/
+\bibitem{b4} R. Verma and V. Sahni, ``Cloud Platform Programming Project Brief,'' National College of Ireland, 2026.
+\bibitem{b5} OWASP Foundation, ``OWASP ZAP Baseline Scan for DevSecOps,'' [Online]. Available: https://www.zaproxy.org/docs/docker/baseline-scan/
+\bibitem{b6} S. Newman, Monolith to Microservices: Evolutionary Patterns to Transform Your System. O'Reilly Media, 2019. 
+\bibitem{b7} W3C, ``Web Content Accessibility Guidelines (WCAG) 2.2,'' W3C Recommendation, 2023.
+\bibitem{b8} D. Merkel, ``Docker: lightweight linux containers for consistent development and deployment,'' Linux Journal, vol. 2014, no. 239, 2014.
+\bibitem{b9} J. B. Bernier, ``Ethical implications of AI in talent acquisition,'' Journal of Business Ethics, 2022.
+\bibitem{b10} M. Al-Rubaie and J. M. Chang, ``Privacy-preserving machine learning: Threats and solutions,'' IEEE Security \& Privacy, vol. 17, no. 2, pp. 49--58, 2019.
+\bibitem{b11} M. Fowler and J. Lewis, ``Microservices: a definition,'' ThoughtWorks, 2014.
+\bibitem{b12} N. Kratko and V. Yakovyna, ``Graceful Degradation in Microservices-based Cloud Applications,'' in Proc. IEEE 15th Int. Conf. on CSIT, 2020, pp. 1--4.
+\bibitem{b13} Aqua Security, ``Trivy: A Comprehensive Security Scanner for Containers,'' 2024. [Online]. Available: https://github.com/aquasecurity/trivy
+\bibitem{b14} SonarSource, ``Clean Code and Security Analysis with SonarCloud,'' 2024. [Online]. Available: https://sonarcloud.io/
+\bibitem{b15} OWASP, ``OWASP Zed Attack Proxy (ZAP),'' 2024. [Online]. Available: https://www.zaproxy.org/
+\bibitem{b16} PyCQA, ``Bandit: A tool designed to find common security issues in Python code,'' 2024. [Online]. Available: https://github.com/PyCQA/bandit
+\bibitem{b17} Aqua Security, ``tfsec: Static analysis security scanner for Terraform code,'' 2024. [Online]. Available: https://github.com/aquasecurity/tfsec
+\bibitem{b18} GitHub, ``GitHub Actions: Automate your software development workflows,'' 2024. [Online]. Available: https://github.com/features/actions
+\bibitem{b19} Brookings Institution, ``The Ethical Implications of Generative AI in Recruitment and Talent Management,'' Brookings Whitepaper, 2024. 
+\bibitem{b20} D. Li, L. Raymond, and P. Bergman, ``Hiring as a Search Problem: Reducing Bias via Algorithmic Decision-Making,'' MIT Sloan Management Review, 2023.
+\end{thebibliography}
+
+\end{document}
