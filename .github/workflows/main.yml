@@ -8,6 +8,7 @@ on:
 
 jobs:
   frontend-test:
+    name: Frontend (ESLint/Jest/Coverage)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -34,6 +35,7 @@ jobs:
           path: frontend/coverage/lcov.info
 
   backend-test:
+    name: Backend (Bandit/Pylint/Pytest)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -71,6 +73,7 @@ jobs:
           path: backend/coverage.xml
 
   docker-scan:
+    name: Container Security (Trivy Scan)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -128,7 +131,7 @@ jobs:
           SONAR_HOST_URL: https://sonarcloud.io
 
   terraform-scan:
-    name: Terraform Security Scan
+    name: Infrastructure (tfsec Scan)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
