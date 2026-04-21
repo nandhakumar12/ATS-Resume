@@ -20,6 +20,8 @@ data "aws_acm_certificate" "issued" {
   statuses = ["ISSUED"]
 }
 
+data "aws_caller_identity" "current" {}
+
 # --- 2. Load Balancing (ALB) ---
 
 resource "aws_lb" "ats_alb" {
@@ -169,7 +171,7 @@ resource "aws_instance" "backend_server" {
   key_name      = var.key_name
 
   # Using standard LabInstanceProfile in AWS Academy
-  iam_instance_profile = "LabInstanceProfile"
+  iam_instance_profile = var.iam_instance_profile
 
   vpc_security_group_ids = [aws_security_group.instance_sg.id]
   subnet_id              = var.public_subnet_ids[0]
@@ -223,17 +225,67 @@ resource "aws_dynamodb_table" "users_table" {
   }
 }
 
-# --- 4. Auth (Existing Cognito Setup) ---
+# --- 4. Auth (Cognito Setup) ---
 
-# Fetching the existing User Pool
-data "aws_cognito_user_pool" "selected" {
-  user_pool_id = "us-east-1_5rSehoZbr"
+resource "aws_cognito_user_pool" "ats_pool" {
+  name = "ats-user-pool-${var.student_id}"
+
+  password_policy {
+    minimum_length    = 12
+    require_lowercase = true
+    require_numbers   = true
+    require_symbols   = true
+    require_uppercase = true
+  }
+
+  admin_create_user_config {
+    allow_admin_create_user_only = false
+  }
+
+  auto_verified_attributes = ["email"]
+
+  tags = {
+    Name = "ATS User Pool"
+  }
 }
 
-# Fetching the existing App Client
-data "aws_cognito_user_pool_client" "selected" {
-  client_id    = "4td5k9rcuoph3fs5q67gjji93p"
-  user_pool_id = data.aws_cognito_user_pool.selected.id
+resource "aws_cognito_user_pool_client" "ats_client" {
+  name         = "ats-app-client"
+  user_pool_id = aws_cognito_user_pool.ats_pool.id
+
+  generate_secret     = false
+  explicit_auth_flows = ["ADMIN_NO_SRP_AUTH", "USER_PASSWORD_AUTH"]
+
+  allowed_oauth_flows_user_pool_client = true
+  allowed_oauth_flows                  = ["code", "implicit"]
+  allowed_oauth_scopes                 = ["email", "openid", "profile"]
+  callback_urls                        = ["https://${var.domain_name}/api/auth/callback"]
+  logout_urls                          = ["https://${var.domain_name}"]
+}
+
+# --- 4. ECR Repositories (New Account) ---
+# Creating repositories to store our Docker images
+resource "aws_ecr_repository" "backend" {
+  name                 = "ats-backend"
+  image_tag_mutability = "MUTABLE"
+  force_delete         = true
+}
+
+resource "aws_ecr_repository" "frontend" {
+  name                 = "ats-frontend"
+  image_tag_mutability = "MUTABLE"
+  force_delete         = true
+}
+
+resource "aws_ecr_repository" "nginx" {
+  name                 = "ats-nginx"
+  image_tag_mutability = "MUTABLE"
+  force_delete         = true
+}
+
+resource "aws_cognito_user_pool_domain" "ats_domain" {
+  domain       = "ats-resume-${var.student_id}"
+  user_pool_id = aws_cognito_user_pool.ats_pool.id
 }
 
 
@@ -248,17 +300,17 @@ resource "aws_secretsmanager_secret_version" "ats_secrets_v1" {
   secret_id     = aws_secretsmanager_secret.ats_secrets.id
   secret_string = jsonencode({
     GEMINI_API_KEY          = "${var.gemini_api_key}"
-    COGNITO_USER_POOL_ID    = data.aws_cognito_user_pool.selected.id
-    COGNITO_APP_CLIENT_ID   = data.aws_cognito_user_pool_client.selected.id
+    COGNITO_USER_POOL_ID    = aws_cognito_user_pool.ats_pool.id
+    COGNITO_APP_CLIENT_ID   = aws_cognito_user_pool_client.ats_client.id
     COGNITO_REGION          = var.aws_region
-    COGNITO_DOMAIN          = "https://us-east-15rsehozbr.auth.us-east-1.amazoncognito.com"
-    COGNITO_REDIRECT_URI    = "https://nandhakumar.works/api/auth/callback"
-    COGNITO_LOGOUT_URI      = "https://nandhakumar.works"
+    COGNITO_DOMAIN          = "https://${aws_cognito_user_pool_domain.ats_domain.domain}.auth.${var.aws_region}.amazoncognito.com"
+    COGNITO_REDIRECT_URI    = "https://${var.domain_name}/api/auth/callback"
+    COGNITO_LOGOUT_URI      = "https://${var.domain_name}"
     DDB_RESUMES_TABLE       = aws_dynamodb_table.resumes_table.name
     DDB_JOBS_TABLE          = aws_dynamodb_table.jobs_table.name
     DDB_USERS_TABLE         = aws_dynamodb_table.users_table.name
-    ECR_REGISTRY            = "857238695432.dkr.ecr.us-east-1.amazonaws.com/ats"
-    VITE_API_BASE           = "https://nandhakumar.works/api"
+    ECR_REGISTRY            = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.aws_region}.amazonaws.com"
+    VITE_API_BASE           = "https://${var.domain_name}/api"
   })
 }
 

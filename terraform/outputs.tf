@@ -10,12 +10,12 @@ output "ec2_public_ip" {
 
 output "cognito_user_pool_id" {
   description = "The ID of the Cognito User Pool."
-  value       = data.aws_cognito_user_pool.selected.id
+  value       = aws_cognito_user_pool.ats_pool.id
 }
 
 output "cognito_app_client_id" {
   description = "The ID of the Cognito App Client."
-  value       = data.aws_cognito_user_pool_client.selected.id
+  value       = aws_cognito_user_pool_client.ats_client.id
 }
 
 output "dynamodb_tables" {

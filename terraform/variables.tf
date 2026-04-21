@@ -36,3 +36,9 @@ variable "public_subnet_ids" {
   description = "List of existing public subnet IDs."
   type        = list(string)
 }
+
+variable "iam_instance_profile" {
+  description = "The IAM instance profile name (e.g., LabInstanceProfile for labs)."
+  type        = string
+  default     = "LabInstanceProfile"
+}
